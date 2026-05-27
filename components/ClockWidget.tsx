@@ -20,10 +20,10 @@ export default function ClockWidget() {
   }, [])
 
   return (
-    <div className="widget-hover glass-card rounded-3xl p-8 h-full shadow-2xl">
-      <h1 className="text-7xl font-light">{time}</h1>
+    <div className="widget-hover glass-card rounded-3xl p-6 h-full shadow-2xl">
+      <h1 className="text-5xl font-light">{time}</h1>
 
-      <p className="text-zinc-400 mt-4">
+      <p className="text-zinc-400 mt-2">
         {new Date().toLocaleDateString('fr-FR', {
           weekday: 'long',
           day: 'numeric',
