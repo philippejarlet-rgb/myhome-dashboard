@@ -12,22 +12,13 @@ export default function CoursesWidget() {
   const [items, setItems] = useState<Item[]>([])
 
   useEffect(() => {
-
-    const saved =
-      localStorage.getItem('myhome-courses')
-
-    if (saved) {
-
-      const parsed = JSON.parse(saved)
-
-      const remaining = parsed.filter(
-        (item: Item) => !item.checked
-      )
-
-      setItems(remaining)
-
-    }
-
+    fetch('/api/data/courses')
+      .then((r) => r.json())
+      .then((data) => {
+        const remaining = data.items.filter((item: Item) => !item.checked)
+        setItems(remaining)
+      })
+      .catch(() => {})
   }, [])
 
   return (
