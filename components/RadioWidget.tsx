@@ -18,21 +18,13 @@ export default function RadioWidget() {
   const [radios, setRadios] = useState<Radio[]>([])
 
   useEffect(() => {
-
-    const savedRadios = localStorage.getItem('myhome-radios')
-
-    if (savedRadios) {
-
-      const parsed = JSON.parse(savedRadios)
-
-      const favorites = parsed
-        .filter((radio: Radio) => radio.favorite)
-        .slice(0, 4)
-
-      setRadios(favorites)
-
-    }
-
+    fetch('/api/data/radios')
+      .then((r) => r.json())
+      .then((data: Radio[]) => {
+        const favorites = data.filter((r) => r.favorite).slice(0, 4)
+        setRadios(favorites)
+      })
+      .catch(() => {})
   }, [])
 
   const playRadio = (radio: Radio) => {
