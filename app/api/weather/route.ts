@@ -59,9 +59,28 @@ export async function GET() {
       ...cityResponses.map((r) => r.json()),
     ])
 
-    const forecast = (forecastData.list as unknown[])
-      .filter((_: unknown, i: number) => i % 8 === 0)
-      .slice(0, 5)
+    const today = new Date().toISOString().slice(0, 10)
+    type ForecastEntry = {
+      dt_txt: string
+      main: { temp: number }
+      weather: Array<{ main: string; description: string }>
+    }
+    const list = forecastData.list as ForecastEntry[]
+    const byDate = new Map<string, ForecastEntry>()
+    for (const entry of list) {
+      const date = entry.dt_txt.slice(0, 10)
+      if (date === today) continue
+      if (!byDate.has(date)) {
+        byDate.set(date, entry)
+      } else {
+        const currentHour = parseInt(byDate.get(date)!.dt_txt.slice(11, 13))
+        const entryHour = parseInt(entry.dt_txt.slice(11, 13))
+        if (Math.abs(entryHour - 12) < Math.abs(currentHour - 12)) {
+          byDate.set(date, entry)
+        }
+      }
+    }
+    const forecast = Array.from(byDate.values()).slice(0, 4)
 
     return NextResponse.json({ main, forecast, cities })
   } catch {
