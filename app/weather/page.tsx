@@ -24,35 +24,51 @@ export default function WeatherPage() {
   // LOAD
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch('/api/data/weather')
+        if (!response.ok) throw new Error('API error')
+        const data = await response.json()
 
-    const saved =
-      localStorage.getItem('myhome-weather')
+        if (data.length === 0) {
+          const saved = localStorage.getItem('myhome-weather')
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved)
+              const migrateResponse = await fetch('/api/data/weather', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parsed),
+              })
+              if (!migrateResponse.ok) throw new Error('Migration PUT failed')
+              setCities(parsed)
+              localStorage.removeItem('myhome-weather')
+            } catch {
+              // migration failed
+            }
+            setLoaded(true)
+            return
+          }
+        }
 
-    if (saved) {
-
-      setCities(JSON.parse(saved))
-
-    } else {
-
-  setCities([])
-
-}
-
-    setLoaded(true)
-
+        setCities(data)
+        setLoaded(true)
+      } catch {
+        setLoaded(true)
+      }
+    }
+    loadData()
   }, [])
 
   // SAVE
 
   useEffect(() => {
-
     if (!loaded) return
-
-    localStorage.setItem(
-      'myhome-weather',
-      JSON.stringify(cities)
-    )
-
+    fetch('/api/data/weather', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cities),
+    }).catch(() => {})
   }, [cities, loaded])
 
   // ADD CITY LIVE WEATHER
