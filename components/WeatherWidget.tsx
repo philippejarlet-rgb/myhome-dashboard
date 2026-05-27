@@ -95,45 +95,72 @@ export default function WeatherWidget() {
       className={`widget-hover bg-gradient-to-br ${weatherBackground} rounded-3xl p-4 h-full shadow-2xl border border-white/10`}
     >
 
-      <div className="flex justify-between gap-6 h-full">
+      <div className="flex gap-4 h-full">
 
-        {/* LEFT */}
+        {/* LEFT — ville principale */}
+
+        <div className="w-[26%] shrink-0 flex flex-col gap-2">
+
+          <h2 className="text-2xl">
+            {weather.name}
+          </h2>
+
+          <p className="text-6xl font-light">
+            {Math.round(weather.main.temp)}°
+          </p>
+
+          <div className="text-5xl animate-float drop-shadow-2xl">
+            {getWeatherIcon(weather.weather[0].main)}
+          </div>
+
+          <p className="text-zinc-300 capitalize">
+            {weather.weather[0].description}
+          </p>
+
+        </div>
+
+        {/* RIGHT — villes comparaison (haut) + prévisions (bas) */}
 
         <div className="flex-1 flex flex-col gap-3">
 
-          <div>
+          {/* Villes */}
 
-            <h2 className="text-xl mb-2">
-              {weather.name}
-            </h2>
+          <div className="flex gap-2 flex-1">
 
-            <div>
+            {citiesWeather.map((city) => (
 
-              <p className="text-5xl font-light">
-                {Math.round(weather.main.temp)}°
-              </p>
+              <div
+                key={city.name}
+                className="glass-card rounded-2xl px-2 py-3 flex-1 flex flex-col items-center justify-between"
+              >
 
-              <div className="text-4xl animate-float drop-shadow-2xl mt-2">
-                {getWeatherIcon(weather.weather[0].main)}
+                <p className="text-xs text-zinc-300 text-center">
+                  {city.name}
+                </p>
+
+                <div className="text-3xl animate-float">
+                  {getWeatherIcon(city.weather[0].main)}
+                </div>
+
+                <p className="text-2xl font-light">
+                  {Math.round(city.main.temp)}°
+                </p>
+
               </div>
 
-              <p className="text-zinc-300 mt-2 capitalize">
-                {weather.weather[0].description}
-              </p>
-
-            </div>
+            ))}
 
           </div>
 
-          {/* FORECAST */}
+          {/* Prévisions */}
 
-          <div className="mt-3 flex gap-2">
+          <div className="flex gap-2">
 
             {forecast.map((item, index) => (
 
               <div
                 key={index}
-                className="glass-card rounded-xl px-2 py-2 w-12 text-center"
+                className="glass-card rounded-xl px-2 py-2 flex-1 text-center"
               >
 
                 <div className="text-base">
@@ -155,35 +182,6 @@ export default function WeatherWidget() {
             ))}
 
           </div>
-
-        </div>
-
-        {/* RIGHT */}
-
-        <div className="flex gap-3 self-start">
-
-          {citiesWeather.map((city) => (
-
-            <div
-              key={city.name}
-              className="glass-card rounded-2xl px-2 py-3 w-16 flex flex-col items-center justify-around"
-            >
-
-              <p className="text-xs text-zinc-300 text-center">
-                {city.name}
-              </p>
-
-              <div className="text-3xl animate-float">
-                {getWeatherIcon(city.weather[0].main)}
-              </div>
-
-              <p className="text-2xl font-light">
-                {Math.round(city.main.temp)}°
-              </p>
-
-            </div>
-
-          ))}
 
         </div>
 

@@ -81,17 +81,17 @@ export default function Home() {
 
         {/* TOP ROW FIXED HEIGHT */}
 
-        <div className="col-span-12 grid grid-cols-12 gap-4 h-[290px]">
+        <div className="col-span-12 grid grid-cols-12 gap-4 h-[300px]">
 
           <div className="col-span-3 h-full">
             <ClockWidget />
           </div>
 
-          <div className="col-span-6 h-full">
+          <div className="col-span-5 h-full">
             <WeatherWidget />
           </div>
 
-          <div className="col-span-3 h-[290px] flex flex-col gap-4">
+          <div className="col-span-4 h-[300px] flex flex-col gap-4">
 
             <div className="h-[160px]">
               <TodoWidget />
