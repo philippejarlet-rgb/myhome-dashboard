@@ -44,15 +44,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Fichier trop volumineux (max 10 Mo)' }, { status: 400 })
   }
 
-  const filename = path.basename(file.name)
-  if (!filename) {
+  const raw = path.basename(file.name)
+  if (!raw) {
     return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 })
   }
 
-  const ext = path.extname(filename).toLowerCase()
+  const ext = path.extname(raw).toLowerCase()
   if (!IMAGE_EXTENSIONS.includes(ext)) {
     return NextResponse.json({ error: 'Extension non supportée' }, { status: 400 })
   }
+
+  // Sanitize: spaces → hyphens, remove unsafe chars, lowercase extension
+  const base = path.basename(raw, ext).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '')
+  const filename = (base || 'photo') + ext
 
   try {
     mkdirSync(PHOTOS_DIR, { recursive: true })
