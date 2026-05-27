@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { readFileSync, existsSync } from 'fs'
 import path from 'path'
 
+export const dynamic = 'force-dynamic'
+
 const BASE = 'https://api.openweathermap.org/data/2.5'
 
 type City = {

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { readdirSync, mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 
+export const dynamic = 'force-dynamic'
+
 const PHOTOS_DIR = path.join(process.cwd(), 'public', 'photos')
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
