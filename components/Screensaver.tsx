@@ -6,6 +6,22 @@ type Props = {
   onWake: () => void
 }
 
+type Weather = {
+  city: string
+  temp: number
+  description: string
+  icon: string
+}
+
+function getWeatherIcon(main: string): string {
+  const m = main.toLowerCase()
+  if (m.includes('cloud')) return '☁️'
+  if (m.includes('rain')) return '🌧'
+  if (m.includes('storm')) return '⛈'
+  if (m.includes('snow')) return '❄️'
+  return '☀️'
+}
+
 export default function Screensaver({ onWake }: Props) {
 
   const images = [
@@ -52,6 +68,35 @@ export default function Screensaver({ onWake }: Props) {
     return () => clearInterval(interval)
   }, [])
 
+  const [weather, setWeather] = useState<Weather | null>(null)
+
+  // WEATHER
+  useEffect(() => {
+    async function fetchWeather() {
+      try {
+        const response = await fetch('/api/weather')
+        if (!response.ok) throw new Error('API error')
+        const data = await response.json()
+        const main = data.main
+        setWeather({
+          city: main.name,
+          temp: Math.round(main.main.temp),
+          description: main.weather[0].description,
+          icon: getWeatherIcon(main.weather[0].main),
+        })
+      } catch {
+        // garde le placeholder affiché
+      }
+    }
+    fetchWeather()
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const weatherText = weather
+    ? `${weather.city} • ${weather.temp}° • ${weather.description} ${weather.icon}`
+    : 'Louhans • ... • ...'
+
   return (
 
     <div
@@ -81,7 +126,7 @@ export default function Screensaver({ onWake }: Props) {
           </h1>
 
           <p className="text-3xl text-zinc-200 mt-6">
-            Louhans • 24° • Clair 🌙
+            {weatherText}
           </p>
 
         </div>
