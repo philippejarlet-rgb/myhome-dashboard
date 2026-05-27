@@ -25,37 +25,58 @@ export default function CoursesPage() {
   // LOAD
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch('/api/data/courses')
+        if (!response.ok) throw new Error('API error')
+        const data = await response.json()
 
-    const saved =
-      localStorage.getItem('myhome-courses')
+        if (data.items.length === 0 && data.history.length === 0) {
+          const savedItems = localStorage.getItem('myhome-courses')
+          const savedHistory = localStorage.getItem('myhome-courses-history')
+          if (savedItems || savedHistory) {
+            try {
+              const parsed = {
+                items: savedItems ? JSON.parse(savedItems) : [],
+                history: savedHistory ? JSON.parse(savedHistory) : [],
+              }
+              await fetch('/api/data/courses', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parsed),
+              })
+              setItems(parsed.items)
+              setHistory(parsed.history)
+              localStorage.removeItem('myhome-courses')
+              localStorage.removeItem('myhome-courses-history')
+            } catch {
+              // migration failed, continue with empty list
+            }
+            setLoaded(true)
+            return
+          }
+        }
 
-    if (saved) {
-
-      setItems(JSON.parse(saved))
+        setItems(data.items)
+        setHistory(data.history)
+        setLoaded(true)
+      } catch {
+        setLoaded(true)
+      }
     }
-
-    const savedHistory =
-      localStorage.getItem('myhome-courses-history')
-
-    if (savedHistory) {
-
-      setHistory(JSON.parse(savedHistory))
-    }
-
-    setLoaded(true)
-
+    loadData()
   }, [])
 
- useEffect(() => {
+  // SAVE
 
-  if (!loaded) return
-
-  localStorage.setItem(
-    'myhome-courses',
-    JSON.stringify(items)
-  )
-
-}, [items, loaded])
+  useEffect(() => {
+    if (!loaded) return
+    fetch('/api/data/courses', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items, history }),
+    }).catch(() => {})
+  }, [items, history, loaded])
 
   // ADD
 
@@ -85,11 +106,6 @@ export default function CoursesPage() {
       ]
 
       setHistory(updatedHistory)
-
-      localStorage.setItem(
-        'myhome-courses-history',
-        JSON.stringify(updatedHistory)
-      )
     }
 
     setNewItem('')
