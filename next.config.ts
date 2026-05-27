@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/photos/:filename([^/]+\\.[a-zA-Z]+)',
+        destination: '/api/photos/:filename',
+      },
+    ]
+  },
 };
 
 export default nextConfig;
