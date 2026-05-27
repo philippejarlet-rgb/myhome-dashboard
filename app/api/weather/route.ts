@@ -1,8 +1,32 @@
 import { NextResponse } from 'next/server'
+import { readFileSync, existsSync } from 'fs'
+import path from 'path'
 
-const MAIN_CITY = 'Louhans'
-const COMPARISON_CITIES = ['Bali', 'Grez-Doiceau', 'Barcelone']
 const BASE = 'https://api.openweathermap.org/data/2.5'
+
+type City = {
+  name: string
+  main?: boolean
+  favorite?: boolean
+}
+
+function getWeatherConfig(): { mainCity: string; comparisonCities: string[] } {
+  const filePath = path.join(process.cwd(), 'data', 'weather.json')
+  if (!existsSync(filePath)) {
+    return { mainCity: 'Louhans', comparisonCities: [] }
+  }
+  try {
+    const cities: City[] = JSON.parse(readFileSync(filePath, 'utf-8'))
+    const mainCity = cities.find((c) => c.main)?.name ?? 'Louhans'
+    const comparisonCities = cities
+      .filter((c) => c.favorite)
+      .slice(0, 3)
+      .map((c) => c.name)
+    return { mainCity, comparisonCities }
+  } catch {
+    return { mainCity: 'Louhans', comparisonCities: [] }
+  }
+}
 
 export async function GET() {
   const apiKey = process.env.OPENWEATHER_API_KEY
@@ -14,11 +38,13 @@ export async function GET() {
     )
   }
 
+  const { mainCity, comparisonCities } = getWeatherConfig()
+
   try {
     const [mainRes, forecastRes, ...cityResponses] = await Promise.all([
-      fetch(`${BASE}/weather?q=${MAIN_CITY}&units=metric&lang=fr&appid=${apiKey}`),
-      fetch(`${BASE}/forecast?q=${MAIN_CITY}&units=metric&lang=fr&appid=${apiKey}`),
-      ...COMPARISON_CITIES.map((city) =>
+      fetch(`${BASE}/weather?q=${mainCity}&units=metric&lang=fr&appid=${apiKey}`),
+      fetch(`${BASE}/forecast?q=${mainCity}&units=metric&lang=fr&appid=${apiKey}`),
+      ...comparisonCities.map((city) =>
         fetch(`${BASE}/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`)
       ),
     ])
