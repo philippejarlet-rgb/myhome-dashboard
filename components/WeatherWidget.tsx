@@ -32,7 +32,7 @@ export default function WeatherWidget() {
 
   if (!weather || !weather.main) {
     return (
-      <div className="widget-hover glass-card rounded-3xl p-8 h-full shadow-2xl">
+      <div className="widget-hover glass-card rounded-3xl p-4 h-full shadow-2xl">
         Chargement météo...
       </div>
     )
