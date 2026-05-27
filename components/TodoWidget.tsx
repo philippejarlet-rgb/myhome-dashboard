@@ -22,11 +22,11 @@ export default function TodoWidget() {
 
   return (
 
-    <div className="widget-hover glass-card rounded-3xl p-8 shadow-2xl h-[200px] flex flex-col overflow-hidden">
+    <div className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden">
 
-     <h2 className="text-xl mb-4 shrink-0">
-       Todo
-     </h2>
+      <h2 className="text-base mb-2 shrink-0">
+        Todo
+      </h2>
 
       <div className="flex-1 min-h-0 overflow-y-auto pr-2 scrollbar-thin">
 

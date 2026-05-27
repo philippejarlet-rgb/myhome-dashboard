@@ -23,9 +23,9 @@ export default function CoursesWidget() {
 
   return (
 
-    <div className="widget-hover glass-card rounded-3xl p-6 shadow-2xl h-[170px] flex flex-col overflow-hidden">
+    <div className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden">
 
-      <h2 className="text-xl mb-4 shrink-0">
+      <h2 className="text-base mb-2 shrink-0">
         Courses
       </h2>
 
