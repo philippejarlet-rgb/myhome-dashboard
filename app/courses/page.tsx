@@ -40,11 +40,12 @@ export default function CoursesPage() {
                 items: savedItems ? JSON.parse(savedItems) : [],
                 history: savedHistory ? JSON.parse(savedHistory) : [],
               }
-              await fetch('/api/data/courses', {
+              const migrateResponse = await fetch('/api/data/courses', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(parsed),
               })
+              if (!migrateResponse.ok) throw new Error('Migration PUT failed')
               setItems(parsed.items)
               setHistory(parsed.history)
               localStorage.removeItem('myhome-courses')
