@@ -23,27 +23,36 @@ export default function TodoPage() {
 
   useEffect(() => {
     async function loadData() {
-      const response = await fetch('/api/data/todos')
-      const data = await response.json()
+      try {
+        const response = await fetch('/api/data/todos')
+        if (!response.ok) throw new Error('API error')
+        const data = await response.json()
 
-      if (data.length === 0) {
-        const saved = localStorage.getItem('myhome-todos')
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          await fetch('/api/data/todos', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(parsed),
-          })
-          setTodos(parsed)
-          localStorage.removeItem('myhome-todos')
-          setLoaded(true)
-          return
+        if (data.length === 0) {
+          const saved = localStorage.getItem('myhome-todos')
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved)
+              await fetch('/api/data/todos', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parsed),
+              })
+              setTodos(parsed)
+              localStorage.removeItem('myhome-todos')
+            } catch {
+              // migration failed, continue with empty list
+            }
+            setLoaded(true)
+            return
+          }
         }
-      }
 
-      setTodos(data)
-      setLoaded(true)
+        setTodos(data)
+        setLoaded(true)
+      } catch {
+        setLoaded(true)
+      }
     }
     loadData()
   }, [])
@@ -56,7 +65,7 @@ export default function TodoPage() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(todos),
-    })
+    }).catch(() => {})
   }, [todos, loaded])
 
  
