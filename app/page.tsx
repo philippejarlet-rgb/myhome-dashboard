@@ -62,7 +62,7 @@ export default function Home() {
   return (
 
     <main
-      className={`min-h-screen overflow-hidden bg-gradient-to-br ${backgroundClass} text-white p-6`}
+      className={`min-h-screen overflow-hidden bg-gradient-to-br ${backgroundClass} text-white p-3`}
     >
 
       {/* BACKGROUND */}
@@ -77,11 +77,11 @@ export default function Home() {
 
       {/* GRID */}
 
-      <div className="relative grid grid-cols-12 gap-6 h-[78vh]">
+      <div className="relative grid grid-cols-12 gap-4">
 
         {/* TOP ROW FIXED HEIGHT */}
 
-        <div className="col-span-12 grid grid-cols-12 gap-6 h-[390px]">
+        <div className="col-span-12 grid grid-cols-12 gap-4 h-[300px]">
 
           <div className="col-span-3 h-full">
             <ClockWidget />
@@ -91,17 +91,17 @@ export default function Home() {
             <WeatherWidget />
           </div>
 
-          <div className="col-span-3 h-[390px] flex flex-col gap-6">
+          <div className="col-span-3 h-[300px] flex flex-col gap-4">
 
-  <div className="h-[200px]">
-    <TodoWidget />
-  </div>
+            <div className="h-[160px]">
+              <TodoWidget />
+            </div>
 
-  <div className="h-[140px]">
-    <CoursesWidget />
-  </div>
+            <div className="flex-1">
+              <CoursesWidget />
+            </div>
 
-</div>
+          </div>
 
         </div>
 
