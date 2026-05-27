@@ -117,11 +117,11 @@ export default function WeatherWidget() {
             {weather.weather[0].description}
           </p>
 
-          <p className="text-zinc-400 text-xs">
+          <p className="text-zinc-400 text-[15px]">
             💨 {Math.round((weather.wind?.speed ?? 0) * 3.6)} km/h
           </p>
 
-          <p className="text-zinc-400 text-xs">
+          <p className="text-zinc-400 text-[15px]">
             💧 {weather.main.humidity}%
           </p>
 
