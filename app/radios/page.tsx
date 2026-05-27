@@ -27,48 +27,71 @@ export default function RadiosPage() {
   // LOAD
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch('/api/data/radios')
+        if (!response.ok) throw new Error('API error')
+        const data = await response.json()
 
-    const savedRadios = localStorage.getItem('myhome-radios')
+        if (data.length === 0) {
+          const saved = localStorage.getItem('myhome-radios')
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved)
+              const migrateResponse = await fetch('/api/data/radios', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parsed),
+              })
+              if (!migrateResponse.ok) throw new Error('Migration PUT failed')
+              setRadios(parsed)
+              localStorage.removeItem('myhome-radios')
+            } catch {
+              // migration failed
+            }
+            return
+          }
 
-    if (savedRadios) {
+          const defaultRadios = [
+            {
+              name: 'Couleur 3',
+              stream: 'https://stream.srg-ssr.ch/m/couleur3/mp3_128',
+              logo: '/logos/couleur3.png',
+              favorite: true,
+            },
+            {
+              name: 'Reggae',
+              stream: 'https://hd.lagrosseradio.info/lagrosseradio-reggae-192.mp3',
+              logo: '/logos/radioreggae.png',
+              favorite: true,
+            },
+            {
+              name: 'MAXXIMA',
+              stream: 'http://maxxima.mine.nu:8000/',
+              logo: '/logos/maxxima.png',
+              favorite: true,
+            },
+          ]
+          try {
+            const defaultResponse = await fetch('/api/data/radios', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(defaultRadios),
+            })
+            if (!defaultResponse.ok) throw new Error('Default PUT failed')
+          } catch {
+            // default save failed, still show defaults in UI
+          }
+          setRadios(defaultRadios)
+          return
+        }
 
-      setRadios(JSON.parse(savedRadios))
-
-    } else {
-
-      const defaultRadios = [
-
-        {
-          name: 'Couleur 3',
-          stream: 'https://stream.srg-ssr.ch/m/couleur3/mp3_128',
-          logo: '/logos/couleur3.png',
-          favorite: true,
-        },
-
-        {
-          name: 'Reggae',
-          stream: 'https://hd.lagrosseradio.info/lagrosseradio-reggae-192.mp3',
-          logo: '/logos/radioreggae.png',
-          favorite: true,
-        },
-
-        {
-          name: 'MAXXIMA',
-          stream: 'http://maxxima.mine.nu:8000/',
-          logo: '/logos/maxxima.png',
-          favorite: true,
-        },
-
-      ]
-
-      setRadios(defaultRadios)
-
-      localStorage.setItem(
-        'myhome-radios',
-        JSON.stringify(defaultRadios)
-      )
+        setRadios(data)
+      } catch {
+        // load failed, radios stay empty
+      }
     }
-
+    loadData()
   }, [])
 
   // PLAY
@@ -121,10 +144,11 @@ export default function RadiosPage() {
 
     setRadios(updatedRadios)
 
-    localStorage.setItem(
-      'myhome-radios',
-      JSON.stringify(updatedRadios)
-    )
+    fetch('/api/data/radios', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedRadios),
+    }).catch(() => {})
 
     setNewName('')
     setNewStream('')
@@ -209,10 +233,11 @@ export default function RadiosPage() {
 
       setRadios(updatedRadios)
 
-      localStorage.setItem(
-        'myhome-radios',
-        JSON.stringify(updatedRadios)
-      )
+      fetch('/api/data/radios', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedRadios),
+      }).catch(() => {})
     }}
     className="text-yellow-400 text-sm hover:text-yellow-300"
   >
@@ -234,10 +259,11 @@ export default function RadiosPage() {
 
                  setRadios(updatedRadios)
 
-                   localStorage.setItem(
-                'myhome-radios',
-               JSON.stringify(updatedRadios)
-               )
+                 fetch('/api/data/radios', {
+                   method: 'PUT',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify(updatedRadios),
+                 }).catch(() => {})
               }}
                className="text-red-400 text-sm hover:text-red-300 mt-2"
                 >
