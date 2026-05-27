@@ -22,30 +22,42 @@ export default function TodoPage() {
   // LOAD
 
   useEffect(() => {
+    async function loadData() {
+      const response = await fetch('/api/data/todos')
+      const data = await response.json()
 
-    const saved =
-      localStorage.getItem('myhome-todos')
+      if (data.length === 0) {
+        const saved = localStorage.getItem('myhome-todos')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          await fetch('/api/data/todos', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parsed),
+          })
+          setTodos(parsed)
+          localStorage.removeItem('myhome-todos')
+          setLoaded(true)
+          return
+        }
+      }
 
-    if (saved) {
-
-      setTodos(JSON.parse(saved))
+      setTodos(data)
       setLoaded(true)
     }
-
+    loadData()
   }, [])
 
   // SAVE
 
- useEffect(() => {
-
-  if (!loaded) return
-
-  localStorage.setItem(
-    'myhome-todos',
-    JSON.stringify(todos)
-  )
-
-}, [todos, loaded]) 
+  useEffect(() => {
+    if (!loaded) return
+    fetch('/api/data/todos', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(todos),
+    })
+  }, [todos, loaded])
 
  
 
