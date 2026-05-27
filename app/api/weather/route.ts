@@ -42,12 +42,16 @@ export async function GET() {
 
   try {
     const [mainRes, forecastRes, ...cityResponses] = await Promise.all([
-      fetch(`${BASE}/weather?q=${mainCity}&units=metric&lang=fr&appid=${apiKey}`),
-      fetch(`${BASE}/forecast?q=${mainCity}&units=metric&lang=fr&appid=${apiKey}`),
+      fetch(`${BASE}/weather?q=${encodeURIComponent(mainCity)}&units=metric&lang=fr&appid=${apiKey}`),
+      fetch(`${BASE}/forecast?q=${encodeURIComponent(mainCity)}&units=metric&lang=fr&appid=${apiKey}`),
       ...comparisonCities.map((city) =>
-        fetch(`${BASE}/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`)
+        fetch(`${BASE}/weather?q=${encodeURIComponent(city)}&units=metric&lang=fr&appid=${apiKey}`)
       ),
     ])
+
+    if (!mainRes.ok || !forecastRes.ok) {
+      return NextResponse.json({ error: 'Erreur OpenWeatherMap' }, { status: 502 })
+    }
 
     const [main, forecastData, ...cities] = await Promise.all([
       mainRes.json(),
