@@ -32,8 +32,12 @@ export async function GET(
     return NextResponse.json(DEFAULTS[type])
   }
 
-  const content = readFileSync(filePath, 'utf-8')
-  return NextResponse.json(JSON.parse(content))
+  try {
+    const content = readFileSync(filePath, 'utf-8')
+    return NextResponse.json(JSON.parse(content))
+  } catch {
+    return NextResponse.json({ error: 'Erreur lecture fichier' }, { status: 500 })
+  }
 }
 
 export async function PUT(
@@ -46,13 +50,18 @@ export async function PUT(
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
 
-  const data = await request.json()
-
-  if (!existsSync(DATA_DIR)) {
-    mkdirSync(DATA_DIR, { recursive: true })
+  let data: unknown
+  try {
+    data = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Corps JSON invalide' }, { status: 400 })
   }
 
-  writeFileSync(getFilePath(type), JSON.stringify(data, null, 2), 'utf-8')
-
-  return NextResponse.json({ success: true })
+  try {
+    mkdirSync(DATA_DIR, { recursive: true })
+    writeFileSync(getFilePath(type), JSON.stringify(data, null, 2), 'utf-8')
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Erreur écriture fichier' }, { status: 500 })
+  }
 }
