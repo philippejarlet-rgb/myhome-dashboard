@@ -40,10 +40,19 @@ export default function Screensaver({ onWake }: Props) {
 
   }, [])
 
-  const time = new Date().toLocaleTimeString('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const [time, setTime] = useState(() =>
+    new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  )
+
+  // CLOCK
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(
+        new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      )
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
 
