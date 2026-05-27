@@ -46,10 +46,10 @@ export default function RadiosPage() {
               if (!migrateResponse.ok) throw new Error('Migration PUT failed')
               setRadios(parsed)
               localStorage.removeItem('myhome-radios')
+              return
             } catch {
-              // migration failed
+              // migration failed, fall through to defaults
             }
-            return
           }
 
           const defaultRadios = [
