@@ -92,7 +92,7 @@ export default function PhotosPage() {
               </button>
               <button
                 onClick={() => handleDelete(filename)}
-                className="absolute top-2 right-2 bg-black/60 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-sm"
+                className="absolute top-2 right-2 bg-black/60 active:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center transition-all text-sm"
               >
                 ✕
               </button>
