@@ -82,11 +82,11 @@ export default function PhotosPage() {
           {photos.map((filename) => (
             <div key={filename} className="group relative overflow-hidden rounded-3xl h-56">
               <button
-                onClick={() => setSelectedImage(`/photos/${filename}`)}
+                onClick={() => setSelectedImage(`/api/photos/${filename}`)}
                 className="w-full h-full"
               >
                 <img
-                  src={`/photos/${filename}`}
+                  src={`/api/photos/${filename}`}
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 />
               </button>

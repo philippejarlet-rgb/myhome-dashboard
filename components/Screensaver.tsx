@@ -44,7 +44,7 @@ export default function Screensaver({ onWake }: Props) {
     fetch('/api/photos')
       .then((r) => r.json())
       .then((files: string[]) => {
-        setImages(shuffle(files.map((f) => `/photos/${f}`)))
+        setImages(shuffle(files.map((f) => `/api/photos/${f}`)))
       })
       .catch(() => {})
   }, [])
