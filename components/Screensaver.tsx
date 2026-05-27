@@ -46,11 +46,9 @@ export default function Screensaver({ onWake }: Props) {
 
   // CLOCK
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(
-        new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-      )
-    }, 60000)
+    const updateTime = () =>
+      setTime(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))
+    const interval = setInterval(updateTime, 60000)
     return () => clearInterval(interval)
   }, [])
 
