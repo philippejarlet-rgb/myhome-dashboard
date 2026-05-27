@@ -43,11 +43,11 @@ export default function WeatherPage() {
               if (!migrateResponse.ok) throw new Error('Migration PUT failed')
               setCities(parsed)
               localStorage.removeItem('myhome-weather')
+              setLoaded(true)
+              return
             } catch {
-              // migration failed
+              // migration failed, continue with empty list
             }
-            setLoaded(true)
-            return
           }
         }
 
