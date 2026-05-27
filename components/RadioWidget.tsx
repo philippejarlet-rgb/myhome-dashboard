@@ -55,28 +55,16 @@ export default function RadioWidget() {
 
   return (
 
-    <div className="widget-hover glass-card rounded-3xl p-6 shadow-2xl">
+    <div className="widget-hover glass-card rounded-3xl p-4 shadow-2xl">
 
-      <div className="flex items-center justify-between mb-6">
-
-        <h2 className="text-2xl font-light">
-          Multimédia
-        </h2>
-
-        <div className="text-zinc-400">
-          MYHOME HUB
-        </div>
-
-      </div>
-
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 gap-3">
 
         {radios.map((radio) => (
 
           <button
             key={radio.name}
             onClick={() => playRadio(radio)}
-            className={`transition-all rounded-2xl p-6 flex flex-col items-center justify-center gap-3
+            className={`transition-all rounded-2xl p-3 flex flex-col items-center justify-center gap-2
             ${
               activeRadio === radio.name
                 ? 'bg-cyan-500/30 border border-cyan-400 shadow-cyan-500/30 shadow-2xl'
@@ -86,7 +74,7 @@ export default function RadioWidget() {
 
             <img
               src={radio.logo}
-              className="h-20 object-contain rounded-xl"
+              className="h-12 object-contain rounded-xl"
             />
 
             <span>
@@ -99,7 +87,7 @@ export default function RadioWidget() {
 
         <button
           onClick={stopRadio}
-          className={`transition-all rounded-2xl p-6 flex flex-col items-center justify-center gap-3
+          className={`transition-all rounded-2xl p-3 flex flex-col items-center justify-center gap-2
           ${
             activeRadio === ''
               ? 'bg-red-500/50 border border-red-400 shadow-red-500/30 shadow-2xl'
@@ -107,7 +95,7 @@ export default function RadioWidget() {
           }`}
         >
 
-          <span className="text-4xl">
+          <span className="text-3xl">
             ⏹
           </span>
 
