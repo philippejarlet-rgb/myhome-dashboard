@@ -160,7 +160,7 @@ export default function WeatherWidget() {
 
         {/* RIGHT */}
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 self-start">
 
           {citiesWeather.map((city) => (
 
