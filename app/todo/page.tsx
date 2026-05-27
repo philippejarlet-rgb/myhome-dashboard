@@ -33,11 +33,12 @@ export default function TodoPage() {
           if (saved) {
             try {
               const parsed = JSON.parse(saved)
-              await fetch('/api/data/todos', {
+              const migrateResponse = await fetch('/api/data/todos', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(parsed),
               })
+              if (!migrateResponse.ok) throw new Error('Migration PUT failed')
               setTodos(parsed)
               localStorage.removeItem('myhome-todos')
             } catch {
