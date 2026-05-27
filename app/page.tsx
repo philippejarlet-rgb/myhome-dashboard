@@ -97,7 +97,7 @@ export default function Home() {
               <TodoWidget />
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               <CoursesWidget />
             </div>
 
