@@ -99,7 +99,7 @@ export default function WeatherWidget() {
 
         {/* LEFT */}
 
-        <div className="flex-1 flex flex-col justify-between">
+        <div className="flex-1 flex flex-col gap-3">
 
           <div>
 
@@ -166,7 +166,7 @@ export default function WeatherWidget() {
 
             <div
               key={city.name}
-              className="glass-card rounded-2xl px-2 py-3 w-16 flex flex-col items-center justify-between"
+              className="glass-card rounded-2xl px-2 py-3 w-16 flex flex-col items-center justify-around"
             >
 
               <p className="text-xs text-zinc-300 text-center">
