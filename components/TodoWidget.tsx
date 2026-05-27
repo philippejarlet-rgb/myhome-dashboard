@@ -14,15 +14,10 @@ export default function TodoWidget() {
   // LOAD
 
   useEffect(() => {
-
-    const saved =
-      localStorage.getItem('myhome-todos')
-
-    if (saved) {
-
-      setTodos(JSON.parse(saved))
-    }
-
+    fetch('/api/data/todos')
+      .then((r) => r.json())
+      .then((data) => setTodos(data))
+      .catch(() => {})
   }, [])
 
   return (
