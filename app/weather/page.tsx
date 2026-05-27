@@ -94,10 +94,8 @@ export default function WeatherPage() {
         return
       }
 
-      setCities([
-
-        ...cities,
-
+      setCities(prev => [
+        ...prev,
         {
           name: data.name,
           temp: `${Math.round(data.main.temp)}°`,
@@ -111,7 +109,6 @@ export default function WeatherPage() {
             return '☀️'
           })(),
         },
-
       ])
 
       setNewCity('')
@@ -226,7 +223,7 @@ export default function WeatherPage() {
         {cities.map((city, index) => (
 
           <div
-            key={index}
+            key={city.name}
             className="glass-card rounded-3xl p-8 relative flex flex-col"
           >
 
