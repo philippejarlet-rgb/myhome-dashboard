@@ -41,10 +41,10 @@ export default function CoursesWidget() {
 
           )}
 
-          {items.map((item, index) => (
+          {items.map((item) => (
 
             <li
-              key={index}
+              key={item.text}
               className="flex items-center gap-3"
             >
 

@@ -40,10 +40,10 @@ export default function TodoWidget() {
 
           )}
 
-          {todos.map((todo, index) => (
+          {todos.map((todo) => (
 
             <li
-              key={index}
+              key={todo.text}
               className={`flex items-center gap-3
               ${
                 todo.checked
