@@ -117,6 +117,14 @@ export default function WeatherWidget() {
             {weather.weather[0].description}
           </p>
 
+          <p className="text-zinc-400 text-xs">
+            💨 {Math.round((weather.wind?.speed ?? 0) * 3.6)} km/h
+          </p>
+
+          <p className="text-zinc-400 text-xs">
+            💧 {weather.main.humidity}%
+          </p>
+
         </div>
 
         {/* RIGHT — villes comparaison (haut) + prévisions (bas) */}
