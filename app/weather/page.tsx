@@ -9,6 +9,8 @@ type City = {
   temp: string
   weather: string
   icon: string
+  main?: boolean
+  favorite?: boolean
 }
 
 export default function WeatherPage() {
@@ -134,6 +136,29 @@ export default function WeatherPage() {
     setCities(updated)
   }
 
+  // TOGGLE MAIN
+
+  const toggleMain = (index: number) => {
+    const updated = cities.map((city, i) => ({
+      ...city,
+      main: i === index ? !city.main : false,
+    }))
+    setCities(updated)
+  }
+
+  // TOGGLE FAVORITE
+
+  const toggleFavorite = (index: number) => {
+    const city = cities[index]
+    const favoriteCount = cities.filter((c) => c.favorite).length
+    if (!city.favorite && favoriteCount >= 3) return
+    const updated = cities.map((c, i) => ({
+      ...c,
+      favorite: i === index ? !c.favorite : c.favorite,
+    }))
+    setCities(updated)
+  }
+
   return (
 
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
@@ -202,7 +227,7 @@ export default function WeatherPage() {
 
           <div
             key={index}
-            className="glass-card rounded-3xl p-8 h-64 relative"
+            className="glass-card rounded-3xl p-8 relative flex flex-col"
           >
 
             <button
@@ -216,19 +241,48 @@ export default function WeatherPage() {
               {city.name}
             </h2>
 
-            <p className="text-7xl mt-8 font-thin">
+            <p className="text-7xl mt-6 font-thin">
               {city.temp}
             </p>
 
             <div className="flex items-center gap-3 mt-4">
 
               <div className="text-4xl">
-            {city.icon}
-            </div>
+                {city.icon}
+              </div>
 
               <p className="text-zinc-300 capitalize">
                 {city.weather}
               </p>
+
+            </div>
+
+            <div className="flex gap-2 mt-4">
+
+              <button
+                onClick={() => toggleMain(index)}
+                className={`flex-1 rounded-xl px-3 py-2 text-sm transition-all ${
+                  city.main
+                    ? 'bg-cyan-500 text-white'
+                    : 'bg-white/10 hover:bg-white/20 text-zinc-300'
+                }`}
+              >
+                ⭐ Principale
+              </button>
+
+              <button
+                onClick={() => toggleFavorite(index)}
+                disabled={!city.favorite && cities.filter((c) => c.favorite).length >= 3}
+                className={`flex-1 rounded-xl px-3 py-2 text-sm transition-all ${
+                  city.favorite
+                    ? 'bg-cyan-500 text-white'
+                    : !city.favorite && cities.filter((c) => c.favorite).length >= 3
+                    ? 'opacity-40 cursor-not-allowed bg-white/10 text-zinc-300'
+                    : 'bg-white/10 hover:bg-white/20 text-zinc-300'
+                }`}
+              >
+                ♥ Favori
+              </button>
 
             </div>
 
