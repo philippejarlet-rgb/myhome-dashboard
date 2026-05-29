@@ -154,7 +154,7 @@ export default function MobilePage() {
               <p className="text-zinc-500 text-center mt-8">Aucun article 😊</p>
             )}
             {courses.map((item, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3">
+              <div key={item.text + '-' + i} className="flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3">
                 <button onClick={() => toggleCourse(i)} className="text-2xl shrink-0">
                   {item.checked ? '✅' : '⬜'}
                 </button>
@@ -191,7 +191,7 @@ export default function MobilePage() {
               <p className="text-zinc-500 text-center mt-8">Aucune tâche 🎉</p>
             )}
             {todos.map((todo, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3">
+              <div key={todo.text + '-' + i} className="flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3">
                 <button onClick={() => toggleTodo(i)} className="text-2xl shrink-0">
                   {todo.checked ? '✅' : '⬜'}
                 </button>
