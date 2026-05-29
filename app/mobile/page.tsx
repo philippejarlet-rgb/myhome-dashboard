@@ -96,6 +96,13 @@ export default function MobilePage() {
 
       {/* TOP NAV */}
       <div className="flex border-b border-white/10 shrink-0">
+        <button
+          onClick={() => window.location.reload()}
+          className="flex flex-col items-center gap-1 py-4 px-4 text-sm text-zinc-400 active:text-white transition-all"
+        >
+          <span className="text-2xl">🔄</span>
+          <span>Refresh</span>
+        </button>
         {([
           { id: 'home', icon: '🏠', label: 'MyHome' },
           { id: 'courses', icon: '🛒', label: 'Courses' },
