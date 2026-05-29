@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
-import path from 'path'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
+
+export const dynamic = 'force-dynamic'
 
 const VALID_TYPES = ['todos', 'courses', 'radios', 'weather']
-const DATA_DIR = path.join(process.cwd(), 'data')
 
 const DEFAULTS: Record<string, unknown> = {
   todos: [],
   courses: { items: [], history: [] },
   radios: [],
   weather: [],
-}
-
-function getFilePath(type: string) {
-  return path.join(DATA_DIR, `${type}.json`)
 }
 
 export async function GET(
@@ -26,18 +22,14 @@ export async function GET(
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
 
-  const filePath = getFilePath(type)
+  const { data, error } = await supabaseAdmin
+    .from('app_data')
+    .select('data')
+    .eq('type', type)
+    .single()
 
-  if (!existsSync(filePath)) {
-    return NextResponse.json(DEFAULTS[type])
-  }
-
-  try {
-    const content = readFileSync(filePath, 'utf-8')
-    return NextResponse.json(JSON.parse(content))
-  } catch {
-    return NextResponse.json({ error: 'Erreur lecture fichier' }, { status: 500 })
-  }
+  if (error || !data) return NextResponse.json(DEFAULTS[type])
+  return NextResponse.json(data.data)
 }
 
 export async function PUT(
@@ -50,18 +42,17 @@ export async function PUT(
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
 
-  let data: unknown
+  let body: unknown
   try {
-    data = await request.json()
+    body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Corps JSON invalide' }, { status: 400 })
   }
 
-  try {
-    mkdirSync(DATA_DIR, { recursive: true })
-    writeFileSync(getFilePath(type), JSON.stringify(data, null, 2), 'utf-8')
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json({ error: 'Erreur écriture fichier' }, { status: 500 })
-  }
+  const { error } = await supabaseAdmin
+    .from('app_data')
+    .upsert({ type, data: body })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
 }
