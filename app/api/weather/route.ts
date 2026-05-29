@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { readFileSync, existsSync } from 'fs'
-import path from 'path'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,18 +11,16 @@ type City = {
   favorite?: boolean
 }
 
-function getWeatherConfig(): { mainCity: string; comparisonCities: string[] } {
-  const filePath = path.join(process.cwd(), 'data', 'weather.json')
-  if (!existsSync(filePath)) {
-    return { mainCity: 'Louhans', comparisonCities: [] }
-  }
+async function getWeatherConfig(): Promise<{ mainCity: string; comparisonCities: string[] }> {
   try {
-    const cities: City[] = JSON.parse(readFileSync(filePath, 'utf-8'))
+    const { data } = await supabaseAdmin
+      .from('app_data')
+      .select('data')
+      .eq('type', 'weather')
+      .single()
+    const cities: City[] = data?.data ?? []
     const mainCity = cities.find((c) => c.main)?.name ?? 'Louhans'
-    const comparisonCities = cities
-      .filter((c) => c.favorite)
-      .slice(0, 3)
-      .map((c) => c.name)
+    const comparisonCities = cities.filter((c) => c.favorite).slice(0, 3).map((c) => c.name)
     return { mainCity, comparisonCities }
   } catch {
     return { mainCity: 'Louhans', comparisonCities: [] }
@@ -40,7 +37,7 @@ export async function GET() {
     )
   }
 
-  const { mainCity, comparisonCities } = getWeatherConfig()
+  const { mainCity, comparisonCities } = await getWeatherConfig()
 
   try {
     const [mainRes, forecastRes, ...cityResponses] = await Promise.all([
