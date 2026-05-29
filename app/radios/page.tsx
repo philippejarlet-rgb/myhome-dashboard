@@ -23,6 +23,8 @@ export default function RadiosPage() {
   const [newName, setNewName] = useState('')
   const [newStream, setNewStream] = useState('')
   const [newLogo, setNewLogo] = useState('')
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   // LOAD
 
@@ -122,6 +124,19 @@ export default function RadiosPage() {
 
       localStorage.setItem('radioPlaying', 'false')
     }
+  }
+
+  // UPLOAD LOGO
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingLogo(true)
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch('/api/logos', { method: 'POST', body: form })
+    const data = await res.json()
+    if (data.url) setNewLogo(data.url)
+    setUploadingLogo(false)
   }
 
   // ADD RADIO
@@ -317,12 +332,25 @@ export default function RadiosPage() {
             className="bg-black/20 rounded-xl px-4 py-3 outline-none"
           />
 
-          <input
-            value={newLogo}
-            onChange={(e) => setNewLogo(e.target.value)}
-            placeholder="/logos/..."
-            className="bg-black/20 rounded-xl px-4 py-3 outline-none"
-          />
+          <div className="flex items-center gap-3">
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleLogoUpload}
+            />
+            <button
+              onClick={() => logoInputRef.current?.click()}
+              disabled={uploadingLogo}
+              className="bg-black/20 rounded-xl px-4 py-3 flex-1 text-left disabled:opacity-50"
+            >
+              {uploadingLogo ? 'Upload...' : newLogo ? '✓ Logo uploadé' : '📷 Choisir un logo'}
+            </button>
+            {newLogo && (
+              <img src={newLogo} className="h-10 w-10 object-contain rounded-lg" />
+            )}
+          </div>
 
         </div>
 
