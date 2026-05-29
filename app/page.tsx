@@ -47,6 +47,8 @@ export default function Home() {
 
     window.addEventListener('mousemove', resetTimer)
     window.addEventListener('click', resetTimer)
+    window.addEventListener('touchstart', resetTimer)
+    window.addEventListener('touchmove', resetTimer)
 
     resetTimer()
 
@@ -54,6 +56,8 @@ export default function Home() {
 
       window.removeEventListener('mousemove', resetTimer)
       window.removeEventListener('click', resetTimer)
+      window.removeEventListener('touchstart', resetTimer)
+      window.removeEventListener('touchmove', resetTimer)
 
     }
 
