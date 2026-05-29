@@ -1,0 +1,6 @@
+Météo
+https://home.openweathermap.org/users/sign_up
+User : myhome
+sag@lpj.ch
+4265Pj2007$
+API KEY : 85311cc10563ad5a64b50621bb4db25e

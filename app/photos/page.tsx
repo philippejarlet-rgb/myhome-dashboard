@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const photoUrl = (filename: string) =>
+  `${SUPABASE_URL}/storage/v1/object/public/photos/${encodeURIComponent(filename)}`
+
 export default function PhotosPage() {
   const router = useRouter()
   const [photos, setPhotos] = useState<string[]>([])
@@ -82,11 +86,11 @@ export default function PhotosPage() {
           {photos.map((filename) => (
             <div key={filename} className="group relative overflow-hidden rounded-3xl h-56">
               <button
-                onClick={() => setSelectedImage(`/api/photos/${filename}`)}
+                onClick={() => setSelectedImage(photoUrl(filename))}
                 className="w-full h-full"
               >
                 <img
-                  src={`/api/photos/${filename}`}
+                  src={photoUrl(filename)}
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 />
               </button>

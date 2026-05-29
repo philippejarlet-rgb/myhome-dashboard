@@ -1,25 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readdirSync, mkdirSync, writeFileSync } from 'fs'
-import path from 'path'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
 
-const PHOTOS_DIR = path.join(process.cwd(), 'public', 'photos')
-const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
 
 export async function GET() {
-  try {
-    const files = readdirSync(PHOTOS_DIR).filter((f) =>
-      IMAGE_EXTENSIONS.includes(path.extname(f).toLowerCase())
-    )
-    return NextResponse.json(files)
-  } catch (err: unknown) {
-    if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
-      return NextResponse.json([])
-    }
-    return NextResponse.json({ error: 'Erreur lecture répertoire' }, { status: 500 })
-  }
+  const { data, error } = await supabaseAdmin.storage.from('photos').list()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  const files = (data ?? [])
+    .map((f) => f.name)
+    .filter((name) => IMAGE_EXTENSIONS.includes(
+      ('.' + name.split('.').pop()!).toLowerCase()
+    ))
+  return NextResponse.json(files)
 }
 
 export async function POST(request: NextRequest) {
@@ -34,36 +29,30 @@ export async function POST(request: NextRequest) {
   if (!(fileEntry instanceof File)) {
     return NextResponse.json({ error: 'Champ "file" manquant ou invalide' }, { status: 400 })
   }
-  const file = fileEntry
 
-  if (!ALLOWED_MIME.includes(file.type)) {
+  if (!ALLOWED_MIME.includes(fileEntry.type)) {
     return NextResponse.json({ error: 'Type de fichier non supporté' }, { status: 400 })
   }
 
-  if (file.size > 10 * 1024 * 1024) {
+  if (fileEntry.size > 10 * 1024 * 1024) {
     return NextResponse.json({ error: 'Fichier trop volumineux (max 10 Mo)' }, { status: 400 })
   }
 
-  const raw = path.basename(file.name)
-  if (!raw) {
-    return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 })
-  }
-
-  const ext = path.extname(raw).toLowerCase()
-  if (!IMAGE_EXTENSIONS.includes(ext)) {
-    return NextResponse.json({ error: 'Extension non supportée' }, { status: 400 })
-  }
-
-  // Sanitize: spaces → hyphens, remove unsafe chars, lowercase extension
-  const base = path.basename(raw, ext).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '')
+  const ext = ('.' + fileEntry.name.split('.').pop()!).toLowerCase()
+  const base = fileEntry.name
+    .replace(/\.[^/.]+$/, '')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9_\-]/g, '')
   const filename = (base || 'photo') + ext
 
-  try {
-    mkdirSync(PHOTOS_DIR, { recursive: true })
-    const arrayBuffer = await file.arrayBuffer()
-    writeFileSync(path.join(PHOTOS_DIR, filename), Buffer.from(arrayBuffer))
-    return NextResponse.json({ success: true, filename })
-  } catch {
-    return NextResponse.json({ error: 'Erreur sauvegarde fichier' }, { status: 500 })
-  }
+  const arrayBuffer = await fileEntry.arrayBuffer()
+  const { error } = await supabaseAdmin.storage
+    .from('photos')
+    .upload(filename, Buffer.from(arrayBuffer), {
+      contentType: fileEntry.type,
+      upsert: true,
+    })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true, filename })
 }
