@@ -108,8 +108,8 @@ export default function RadioWidget() {
       </div>
 
       {/* Volume slider — Option C */}
-      <div className="flex items-center gap-3 mt-3 opacity-60 active:opacity-100 transition-opacity">
-        <span className="text-sm">🔈</span>
+      <div className="flex items-center gap-3 mt-6 opacity-60 active:opacity-100 transition-opacity">
+        <span className="text-base">🔈</span>
         <input
           type="range"
           min="0"
@@ -120,12 +120,12 @@ export default function RadioWidget() {
             setVolume(v)
             if (audioRef.current) audioRef.current.volume = v / 100
           }}
-          className="flex-1 h-[3px] rounded-full appearance-none cursor-pointer bg-white/20"
+          className="flex-1 h-[6px] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:shadow-lg"
           style={{
             background: `linear-gradient(to right, rgba(6,182,212,0.8) ${volume}%, rgba(255,255,255,0.15) ${volume}%)`
           }}
         />
-        <span className="text-sm">🔊</span>
+        <span className="text-base">🔊</span>
       </div>
 
       <audio ref={audioRef} />
