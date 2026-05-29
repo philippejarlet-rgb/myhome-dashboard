@@ -43,6 +43,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="MyHome" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+          }
+        `}} />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
