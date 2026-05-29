@@ -19,7 +19,7 @@ export default function NewsTicker() {
   const items = [...news, ...news]
 
   return (
-    <div className="fixed bottom-36 left-0 w-full z-50 flex items-stretch shadow-2xl overflow-hidden"
+    <div className="fixed bottom-24 left-0 w-full z-50 flex items-stretch shadow-2xl overflow-hidden"
          style={{ background: 'linear-gradient(to right, #7f1d1d, #b91c1c)' }}>
 
       {/* Label fixe */}
