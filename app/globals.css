@@ -145,5 +145,5 @@ body {
 }
 
 .animate-news-scroll {
-  animation: news-scroll 40s linear infinite;
+  animation: news-scroll 30s linear infinite;
 }
