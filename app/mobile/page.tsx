@@ -121,10 +121,60 @@ export default function MobilePage() {
 
         {/* HOME TAB */}
         {activeTab === 'home' && (
-          <div className="flex flex-col items-center justify-center h-full gap-6 pt-16">
-            <div className="text-6xl">🏠</div>
-            <h1 className="text-3xl font-thin tracking-widest">MYHOME</h1>
-            <p className="text-zinc-500 text-sm">Tableau de bord personnel</p>
+          <div className="flex flex-col gap-6">
+
+            {/* Header */}
+            <div className="flex flex-col items-center gap-2 py-4">
+              <div className="text-5xl">🏠</div>
+              <h1 className="text-2xl font-thin tracking-widest">MYHOME</h1>
+            </div>
+
+            {/* Todo read-only */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-4">
+              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">📝 Todo</h2>
+              {todos.length === 0 ? (
+                <p className="text-zinc-500 text-sm">Aucune tâche 🎉</p>
+              ) : (
+                <ul className="flex flex-col gap-2">
+                  {todos.filter((t) => !t.checked).map((todo, i) => (
+                    <li key={todo.text + i} className="flex items-center gap-2 text-sm">
+                      <span className="text-zinc-400">◻</span>
+                      <span>{todo.text}</span>
+                    </li>
+                  ))}
+                  {todos.filter((t) => t.checked).map((todo, i) => (
+                    <li key={todo.text + i} className="flex items-center gap-2 text-sm opacity-40 line-through">
+                      <span>✓</span>
+                      <span>{todo.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Courses read-only */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-4">
+              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">🛒 Courses</h2>
+              {courses.length === 0 ? (
+                <p className="text-zinc-500 text-sm">Aucune course 😊</p>
+              ) : (
+                <ul className="flex flex-col gap-2">
+                  {courses.filter((c) => !c.checked).map((item, i) => (
+                    <li key={item.text + i} className="flex items-center gap-2 text-sm">
+                      <span className="text-zinc-400">◻</span>
+                      <span>{item.text}</span>
+                    </li>
+                  ))}
+                  {courses.filter((c) => c.checked).map((item, i) => (
+                    <li key={item.text + i} className="flex items-center gap-2 text-sm opacity-40 line-through">
+                      <span>✓</span>
+                      <span>{item.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
           </div>
         )}
 
