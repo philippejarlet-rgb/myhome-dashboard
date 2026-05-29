@@ -14,7 +14,7 @@ export default function RadioWidget() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const [activeRadio, setActiveRadio] = useState('')
-
+  const [volume, setVolume] = useState(80)
   const [radios, setRadios] = useState<Radio[]>([])
 
   useEffect(() => {
@@ -105,6 +105,27 @@ export default function RadioWidget() {
 
         </button>
 
+      </div>
+
+      {/* Volume slider — Option C */}
+      <div className="flex items-center gap-3 mt-3 opacity-60 active:opacity-100 transition-opacity">
+        <span className="text-sm">🔈</span>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={volume}
+          onChange={(e) => {
+            const v = Number(e.target.value)
+            setVolume(v)
+            if (audioRef.current) audioRef.current.volume = v / 100
+          }}
+          className="flex-1 h-[3px] rounded-full appearance-none cursor-pointer bg-white/20"
+          style={{
+            background: `linear-gradient(to right, rgba(6,182,212,0.8) ${volume}%, rgba(255,255,255,0.15) ${volume}%)`
+          }}
+        />
+        <span className="text-sm">🔊</span>
       </div>
 
       <audio ref={audioRef} />

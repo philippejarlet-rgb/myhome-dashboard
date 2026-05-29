@@ -41,7 +41,7 @@ export default function Home() {
           setScreensaver(true)
         }
 
-      }, 600000)
+      }, 60000)
 
     }
 
