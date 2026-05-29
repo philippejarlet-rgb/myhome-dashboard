@@ -23,8 +23,8 @@ export default function BottomBar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50">
-      <div className="glass-card rounded-3xl px-8 py-4 flex gap-10 items-center">
+    <div className="fixed bottom-0 left-3 right-3 z-50">
+      <div className="glass-card rounded-3xl px-8 py-4 flex justify-between items-center">
 
         <button
           onClick={() => window.location.reload()}
