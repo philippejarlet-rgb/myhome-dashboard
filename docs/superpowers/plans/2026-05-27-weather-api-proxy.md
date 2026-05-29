@@ -32,7 +32,7 @@
 Créer à la racine du projet `c:\Users\LPJ\myhome-dashboard\.env.local` avec ce contenu exact :
 
 ```
-OPENWEATHER_API_KEY=85311cc10563ad5a64b50621bb4db25e
+OPENWEATHER_API_KEY=ta_clé_openweather_ici
 ```
 
 - [ ] **Étape 2 : Vérifier que `.gitignore` l'exclut**
