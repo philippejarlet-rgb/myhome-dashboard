@@ -138,3 +138,12 @@ body {
     inset 0 1px 1px rgba(255,255,255,0.10);
 
 }
+
+@keyframes news-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-news-scroll {
+  animation: news-scroll 60s linear infinite;
+}
