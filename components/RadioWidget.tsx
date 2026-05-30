@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Hls from 'hls.js'
 
 type Radio = {
   name: string
@@ -12,6 +13,7 @@ type Radio = {
 export default function RadioWidget() {
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const hlsRef = useRef<Hls | null>(null)
 
   const [activeRadio, setActiveRadio] = useState('')
   const [volume, setVolume] = useState(80)
@@ -25,13 +27,34 @@ export default function RadioWidget() {
         setRadios(favorites)
       })
       .catch(() => {})
+    return () => {
+      hlsRef.current?.destroy()
+      hlsRef.current = null
+    }
   }, [])
+
+  const playStream = (audio: HTMLAudioElement, url: string) => {
+    hlsRef.current?.destroy()
+    hlsRef.current = null
+    if (url.endsWith('.m3u8')) {
+      if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        audio.src = url
+      } else if (Hls.isSupported()) {
+        const hls = new Hls()
+        hlsRef.current = hls
+        hls.loadSource(url)
+        hls.attachMedia(audio)
+      }
+    } else {
+      audio.src = url
+    }
+  }
 
   const playRadio = (radio: Radio) => {
 
     if (audioRef.current) {
 
-      audioRef.current.src = radio.stream
+      playStream(audioRef.current, radio.stream)
 
       audioRef.current.play()
 
@@ -46,6 +69,9 @@ export default function RadioWidget() {
     if (audioRef.current) {
 
       audioRef.current.pause()
+
+      hlsRef.current?.destroy()
+      hlsRef.current = null
 
       setActiveRadio('')
 

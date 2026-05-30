@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Hls from 'hls.js'
 
 type Radio = {
   name: string
@@ -15,6 +16,7 @@ export default function RadiosPage() {
   const router = useRouter()
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const hlsRef = useRef<Hls | null>(null)
 
   const [activeRadio, setActiveRadio] = useState('')
 
@@ -94,15 +96,36 @@ export default function RadiosPage() {
       }
     }
     loadData()
+    return () => {
+      hlsRef.current?.destroy()
+      hlsRef.current = null
+    }
   }, [])
 
   // PLAY
+
+  const playStream = (audio: HTMLAudioElement, url: string) => {
+    hlsRef.current?.destroy()
+    hlsRef.current = null
+    if (url.endsWith('.m3u8')) {
+      if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        audio.src = url
+      } else if (Hls.isSupported()) {
+        const hls = new Hls()
+        hlsRef.current = hls
+        hls.loadSource(url)
+        hls.attachMedia(audio)
+      }
+    } else {
+      audio.src = url
+    }
+  }
 
   const playRadio = (radio: Radio) => {
 
     if (audioRef.current) {
 
-      audioRef.current.src = radio.stream
+      playStream(audioRef.current, radio.stream)
 
       audioRef.current.play()
 
@@ -119,6 +142,9 @@ export default function RadiosPage() {
     if (audioRef.current) {
 
       audioRef.current.pause()
+
+      hlsRef.current?.destroy()
+      hlsRef.current = null
 
       setActiveRadio('')
 
