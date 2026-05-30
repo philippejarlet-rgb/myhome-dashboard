@@ -13,7 +13,6 @@ export default function BottomBar() {
     { icon: '🌍', label: 'Atlas', href: 'https://atlasculinaire.com/' },
     { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '📝', label: 'Todo', href: '/todo' },
-    { icon: '📅', label: 'Agenda', href: '/agenda' },
     { icon: '📸', label: 'Photos', href: '/photos' },
   ]
 
