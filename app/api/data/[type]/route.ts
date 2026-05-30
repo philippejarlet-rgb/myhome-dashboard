@@ -3,13 +3,14 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
 
-const VALID_TYPES = ['todos', 'courses', 'radios', 'weather']
+const VALID_TYPES = ['todos', 'courses', 'radios', 'weather', 'news_sources']
 
 const DEFAULTS: Record<string, unknown> = {
   todos: [],
   courses: { items: [], history: [] },
   radios: [],
   weather: [],
+  news_sources: [],
 }
 
 export async function GET(
