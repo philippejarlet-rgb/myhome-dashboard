@@ -19,7 +19,7 @@ export default function ClockWidget() {
   }, [])
 
   useEffect(() => {
-    fetch('https://nameday.abalin.net/api/V1/today?timezone=Europe/Paris&country=fr')
+    fetch('https://nameday.abalin.net/api/V1/today?timezone=Europe%2FParis&country=fr')
       .then((r) => r.json())
       .then((data) => {
         const name = data?.nameday?.fr
