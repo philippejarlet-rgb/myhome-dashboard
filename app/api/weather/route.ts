@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
@@ -11,13 +11,16 @@ type City = {
   favorite?: boolean
 }
 
-async function getWeatherConfig(): Promise<{ mainCity: string; comparisonCities: string[] }> {
+async function getWeatherConfig(userId: string | null): Promise<{ mainCity: string; comparisonCities: string[] }> {
   try {
-    const { data } = await supabaseAdmin
+    const query = supabaseAdmin
       .from('app_data')
       .select('data')
       .eq('type', 'weather')
-      .single()
+
+    if (userId) query.eq('user_id', userId)
+
+    const { data } = await query.single()
     const cities: City[] = data?.data ?? []
     const mainCity = cities.find((c) => c.main)?.name ?? 'Louhans'
     const comparisonCities = cities.filter((c) => c.favorite).slice(0, 3).map((c) => c.name)
@@ -27,7 +30,7 @@ async function getWeatherConfig(): Promise<{ mainCity: string; comparisonCities:
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const apiKey = process.env.OPENWEATHER_API_KEY
 
   if (!apiKey) {
@@ -37,7 +40,8 @@ export async function GET() {
     )
   }
 
-  const { mainCity, comparisonCities } = await getWeatherConfig()
+  const userId = request.headers.get('x-user-id')
+  const { mainCity, comparisonCities } = await getWeatherConfig(userId)
 
   try {
     const [mainRes, forecastRes, ...cityResponses] = await Promise.all([
