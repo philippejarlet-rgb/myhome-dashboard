@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
 
 const COOKIE_NAME = 'myhome_session'
 const ADMIN_COOKIE = 'myhome_admin'
-
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout', '/admin/login', '/api/auth/admin']
 
-export function middleware(request: NextRequest) {
+function getSecret() {
+  return new TextEncoder().encode(process.env.JWT_SECRET!)
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Paths publics
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
     return NextResponse.next()
   }
 
-  // Routes admin
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     const adminCookie = request.cookies.get(ADMIN_COOKIE)?.value
     if (!adminCookie || adminCookie !== process.env.ADMIN_SESSION_TOKEN) {
@@ -22,15 +24,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Auth principale (session token — inchangée)
   const token = request.cookies.get(COOKIE_NAME)?.value
-  const expected = process.env.AUTH_SESSION_TOKEN
-
-  if (!token || !expected || token !== expected) {
+  if (!token) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  return NextResponse.next()
+  try {
+    const { payload } = await jwtVerify(token, getSecret())
+    const response = NextResponse.next()
+    response.headers.set('x-user-id', payload.userId as string)
+    response.headers.set('x-user-email', payload.email as string)
+    response.headers.set('x-user-name', payload.name as string)
+    return response
+  } catch {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
 }
 
 export const config = {
