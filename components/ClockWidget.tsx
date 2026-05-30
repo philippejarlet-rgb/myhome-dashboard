@@ -22,9 +22,9 @@ export default function ClockWidget() {
   return (
     <div className="widget-hover glass-card rounded-3xl p-6 h-full shadow-2xl flex flex-col items-center justify-center">
       <h1 className="text-7xl font-light">{time}</h1>
-      <p className="text-zinc-300 mt-3 text-lg capitalize">{date}</p>
+      <p className="text-zinc-300 mt-3 text-xl capitalize">{date}</p>
       {saint && (
-        <p className="text-zinc-400 mt-2 text-sm">🎉 {saint}</p>
+        <p className="text-zinc-400 mt-3 text-base">🎉 {saint}</p>
       )}
     </div>
   )
