@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { getSaintDuJour } from '@/lib/saintsDuJour'
 
 export default function ClockWidget() {
   const [time, setTime] = useState('')
   const [date, setDate] = useState('')
-  const [saint, setSaint] = useState('')
+  const [saint] = useState(() => getSaintDuJour())
 
   useEffect(() => {
     const tick = () => {
@@ -16,16 +17,6 @@ export default function ClockWidget() {
     tick()
     const interval = setInterval(tick, 60000)
     return () => clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
-    fetch('https://nameday.abalin.net/api/V1/today?timezone=Europe%2FParis&country=fr')
-      .then((r) => r.json())
-      .then((data) => {
-        const name = data?.nameday?.fr
-        if (name) setSaint(name)
-      })
-      .catch(() => {})
   }, [])
 
   return (
