@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   // Routes admin
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     const adminCookie = request.cookies.get(ADMIN_COOKIE)?.value
-    if (!adminCookie || adminCookie !== process.env.ADMIN_PASSWORD) {
+    if (!adminCookie || adminCookie !== process.env.ADMIN_SESSION_TOKEN) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
     return NextResponse.next()

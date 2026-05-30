@@ -27,6 +27,7 @@ export default function AdminPage() {
     setUsers(data)
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadUsers() }, [])
 
   const createUser = async (e: React.FormEvent) => {

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 function isAdminAuth(request: NextRequest): boolean {
   const cookie = request.cookies.get('myhome_admin')?.value
-  return !!cookie && cookie === process.env.ADMIN_PASSWORD
+  return !!cookie && cookie === process.env.ADMIN_SESSION_TOKEN
 }
 
 export async function GET(request: NextRequest) {
