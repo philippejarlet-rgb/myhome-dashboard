@@ -28,6 +28,7 @@ export default function BottomBar() {
     { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '🎵', label: 'Radios', href: '/radios' },
     { icon: '🌍', label: 'Atlas', href: 'https://atlasculinaire.com/' },
+    { icon: '📰', label: 'News', href: '/news' },
     { icon: '📸', label: 'Photos', href: '/photos' },
   ]
 
