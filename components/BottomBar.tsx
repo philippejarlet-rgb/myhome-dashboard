@@ -9,7 +9,6 @@ export default function BottomBar() {
   const items = [
     { icon: '🌤️', label: 'Météo', href: '/weather' },
     { icon: '🎵', label: 'Radios', href: '/radios' },
-    { icon: '🍳', label: 'Recettes', href: '/recipes' },
     { icon: '🌍', label: 'Atlas', href: 'https://atlasculinaire.com/' },
     { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '📝', label: 'Todo', href: '/todo' },
