@@ -13,14 +13,8 @@ type City = {
 
 async function getWeatherConfig(userId: string | null): Promise<{ mainCity: string; comparisonCities: string[] }> {
   try {
-    const query = supabaseAdmin
-      .from('app_data')
-      .select('data')
-      .eq('type', 'weather')
-
-    if (userId) query.eq('user_id', userId)
-
-    const { data } = await query.single()
+    const base = supabaseAdmin.from('app_data').select('data').eq('type', 'weather')
+    const { data } = await (userId ? base.eq('user_id', userId) : base).single()
     const cities: City[] = data?.data ?? []
     const mainCity = cities.find((c) => c.main)?.name ?? 'Louhans'
     const comparisonCities = cities.filter((c) => c.favorite).slice(0, 3).map((c) => c.name)
