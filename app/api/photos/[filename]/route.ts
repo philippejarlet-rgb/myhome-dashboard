@@ -13,7 +13,8 @@ export async function GET(
   { params }: { params: Promise<{ filename: string }> }
 ) {
   const { filename } = await params
-  const userId = request.headers.get('x-user-id') ?? 'default'
+  const userId = request.headers.get('x-user-id')
+  if (!userId) return new NextResponse('Non authentifié', { status: 401 })
 
   if (!filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
     return new NextResponse('Fichier invalide', { status: 400 })
@@ -36,7 +37,8 @@ export async function DELETE(
   { params }: { params: Promise<{ filename: string }> }
 ) {
   const { filename } = await params
-  const userId = request.headers.get('x-user-id') ?? 'default'
+  const userId = request.headers.get('x-user-id')
+  if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
   if (!filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
     return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 })
