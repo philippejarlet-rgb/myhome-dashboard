@@ -1,27 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
+import { verifyPassword } from '@/lib/hashPassword'
+import { signJWT } from '@/lib/auth'
 
 const COOKIE_NAME = 'myhome_session'
 const MAX_AGE = 7 * 24 * 60 * 60
 
 export async function POST(request: NextRequest) {
-  const { password } = await request.json()
+  const { email, password } = await request.json()
 
-  if (!password || password !== process.env.AUTH_PASSWORD) {
-    return NextResponse.json(
-      { error: 'Mot de passe incorrect' },
-      { status: 401 }
-    )
+  if (!email || !password) {
+    return NextResponse.json({ error: 'Email et mot de passe requis' }, { status: 400 })
   }
 
-  const response = NextResponse.json({ success: true })
+  const { data: user, error } = await supabaseAdmin
+    .from('users')
+    .select('id, email, name, password_hash')
+    .eq('email', email.toLowerCase())
+    .single()
 
-  response.cookies.set(COOKIE_NAME, process.env.AUTH_SESSION_TOKEN!, {
+  if (error || !user) {
+    return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
+  }
+
+  const valid = await verifyPassword(password, user.password_hash)
+  if (!valid) {
+    return NextResponse.json({ error: 'Identifiants incorrects' }, { status: 401 })
+  }
+
+  const token = await signJWT({ userId: user.id, email: user.email, name: user.name })
+
+  const response = NextResponse.json({ success: true })
+  response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: MAX_AGE,
     path: '/',
   })
-
   return response
 }
