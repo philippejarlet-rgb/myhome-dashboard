@@ -14,6 +14,7 @@ export default function BottomBar() {
     { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '📝', label: 'Todo', href: '/todo' },
     { icon: '📸', label: 'Photos', href: '/photos' },
+    { icon: '📰', label: 'News', href: '/news' },
   ]
 
   const handleLogout = async () => {
