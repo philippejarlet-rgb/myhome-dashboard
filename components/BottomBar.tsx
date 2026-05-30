@@ -24,12 +24,11 @@ export default function BottomBar() {
 
   const items = [
     { icon: '🌤️', label: 'Météo', href: '/weather' },
+    { icon: '📝', label: 'Todo', href: '/todo' },
+    { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '🎵', label: 'Radios', href: '/radios' },
     { icon: '🌍', label: 'Atlas', href: 'https://atlasculinaire.com/' },
-    { icon: '🛒', label: 'Courses', href: '/courses' },
-    { icon: '📝', label: 'Todo', href: '/todo' },
     { icon: '📸', label: 'Photos', href: '/photos' },
-    { icon: '📰', label: 'News', href: '/news' },
   ]
 
   const handleLogout = async () => {
