@@ -32,7 +32,7 @@ export default function NewsTicker() {
 
       {/* Défilement */}
       <div className="flex-1 overflow-hidden py-2">
-        <div className="flex gap-12 animate-news-scroll whitespace-nowrap">
+        <div className="flex gap-12 animate-news-scroll whitespace-nowrap" style={{ width: 'max-content' }}>
           {items.map((item, i) => (
             <span key={i} className="text-white text-sm inline-flex items-center gap-2 shrink-0">
               {item.time && (

@@ -8,7 +8,8 @@ const COUNTRIES = ['fr', 'ch', 'be', 'int'] as const
 
 export default function NewsPage() {
   const router = useRouter()
-  const [selected, setSelected] = useState<string[]>(DEFAULT_SOURCES)
+  const [selected, setSelected] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -16,9 +17,10 @@ export default function NewsPage() {
     fetch('/api/data/news_sources')
       .then((r) => r.json())
       .then((data: string[]) => {
-        if (Array.isArray(data) && data.length > 0) setSelected(data)
+        setSelected(Array.isArray(data) && data.length > 0 ? data : DEFAULT_SOURCES)
       })
-      .catch(() => {})
+      .catch(() => { setSelected(DEFAULT_SOURCES) })
+      .finally(() => setLoading(false))
   }, [])
 
   const toggle = (id: string) => {
