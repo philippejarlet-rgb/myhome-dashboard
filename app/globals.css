@@ -145,7 +145,7 @@ body {
 }
 
 .animate-news-scroll {
-  animation: news-scroll 20s linear infinite;
+  animation: news-scroll 60s linear infinite;
   will-change: transform;
   backface-visibility: hidden;
 }
