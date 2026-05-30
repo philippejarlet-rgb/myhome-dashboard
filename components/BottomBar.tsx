@@ -2,9 +2,25 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 export default function BottomBar() {
   const router = useRouter()
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
 
   const items = [
     { icon: '🌤️', label: 'Météo', href: '/weather' },
@@ -44,6 +60,14 @@ export default function BottomBar() {
             <span>{item.label}</span>
           </Link>
         ))}
+
+        <button
+          onClick={toggleFullscreen}
+          className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
+        >
+          <span className="text-2xl">{isFullscreen ? '⛶' : '⛶'}</span>
+          <span>{isFullscreen ? 'Quitter' : 'Plein écran'}</span>
+        </button>
 
         <button
           onClick={handleLogout}
