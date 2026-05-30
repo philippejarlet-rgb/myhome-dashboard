@@ -14,19 +14,22 @@ const DEFAULTS: Record<string, unknown> = {
 }
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ type: string }> }
 ) {
   const { type } = await params
-
   if (!VALID_TYPES.includes(type)) {
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
+
+  const userId = request.headers.get('x-user-id')
+  if (!userId) return NextResponse.json(DEFAULTS[type])
 
   const { data, error } = await supabaseAdmin
     .from('app_data')
     .select('data')
     .eq('type', type)
+    .eq('user_id', userId)
     .single()
 
   if (error || !data) return NextResponse.json(DEFAULTS[type])
@@ -38,10 +41,12 @@ export async function PUT(
   { params }: { params: Promise<{ type: string }> }
 ) {
   const { type } = await params
-
   if (!VALID_TYPES.includes(type)) {
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
+
+  const userId = request.headers.get('x-user-id')
+  if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
   let body: unknown
   try {
@@ -52,7 +57,7 @@ export async function PUT(
 
   const { error } = await supabaseAdmin
     .from('app_data')
-    .upsert({ type, data: body })
+    .upsert({ type, user_id: userId, data: body })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
