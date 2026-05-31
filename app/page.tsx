@@ -32,15 +32,7 @@ export default function Home() {
       setScreensaver(false)
 
       timeout = setTimeout(() => {
-
-        const radioPlaying =
-          localStorage.getItem('radioPlaying')
-
-        if (radioPlaying !== 'true') {
-
-          setScreensaver(true)
-        }
-
+        setScreensaver(true)
       }, 60000)
 
     }
