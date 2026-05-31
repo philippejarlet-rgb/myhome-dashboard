@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const photoUrl = (filename: string) =>
-  `${SUPABASE_URL}/storage/v1/object/public/photos/${encodeURIComponent(filename)}`
+const photoUrl = (filename: string) => `/api/photos/${encodeURIComponent(filename)}`
 
 export default function PhotosPage() {
   const router = useRouter()
