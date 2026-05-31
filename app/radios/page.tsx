@@ -26,7 +26,9 @@ export default function RadiosPage() {
   const [newStream, setNewStream] = useState('')
   const [newLogo, setNewLogo] = useState('')
   const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [editingName, setEditingName] = useState<string | null>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
 
   // LOAD
 
@@ -165,23 +167,41 @@ export default function RadiosPage() {
     setUploadingLogo(false)
   }
 
-  // ADD RADIO
+  // ADD / EDIT RADIO
 
-  const addRadio = () => {
+  const startEdit = (radio: Radio) => {
+    setEditingName(radio.name)
+    setNewName(radio.name)
+    setNewStream(radio.stream)
+    setNewLogo(radio.logo)
+    formRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const cancelEdit = () => {
+    setEditingName(null)
+    setNewName('')
+    setNewStream('')
+    setNewLogo('')
+  }
+
+  const saveRadio = () => {
 
     if (!newName || !newStream) return
 
-    const updatedRadios = [
+    let updatedRadios: Radio[]
 
-      ...radios,
-
-      {
-        name: newName,
-        stream: newStream,
-        logo: newLogo || '/logos/maxxima.png',
-        favorite: false,
-      },
-    ]
+    if (editingName !== null) {
+      updatedRadios = radios.map((r) =>
+        r.name === editingName
+          ? { ...r, name: newName, stream: newStream, logo: newLogo || r.logo }
+          : r
+      )
+    } else {
+      updatedRadios = [
+        ...radios,
+        { name: newName, stream: newStream, logo: newLogo || '/logos/maxxima.png', favorite: false },
+      ]
+    }
 
     setRadios(updatedRadios)
 
@@ -194,6 +214,7 @@ export default function RadiosPage() {
     setNewName('')
     setNewStream('')
     setNewLogo('')
+    setEditingName(null)
   }
 
   return (
@@ -289,29 +310,39 @@ export default function RadiosPage() {
 
 </div>
 
-            <button
-              onClick={(e) => {
-
-               e.stopPropagation()
-
-               const updatedRadios = radios.filter(
-              (r) => r.name !== radio.name
-               )
-
-                 setRadios(updatedRadios)
-
-                 fetch('/api/data/radios', {
-                   method: 'PUT',
-                   headers: { 'Content-Type': 'application/json' },
-                   body: JSON.stringify(updatedRadios),
-                 }).catch(() => {})
-              }}
-               className="text-red-400 text-sm hover:text-red-300 mt-2"
-                >
-
-                 Supprimer
-
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  startEdit(radio)
+                }}
+                className="text-cyan-400 text-sm hover:text-cyan-300"
+              >
+                Modifier
               </button>
+
+              <button
+                onClick={(e) => {
+
+                 e.stopPropagation()
+
+                 const updatedRadios = radios.filter(
+                (r) => r.name !== radio.name
+                 )
+
+                   setRadios(updatedRadios)
+
+                   fetch('/api/data/radios', {
+                     method: 'PUT',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify(updatedRadios),
+                   }).catch(() => {})
+                }}
+                 className="text-red-400 text-sm hover:text-red-300"
+                  >
+                  Supprimer
+                </button>
+            </div>
 
           </div>
 
@@ -334,12 +365,12 @@ export default function RadiosPage() {
 
       </div>
 
-      {/* ADD */}
+      {/* ADD / EDIT */}
 
-      <div className="glass-card rounded-3xl p-6">
+      <div ref={formRef} className="glass-card rounded-3xl p-6">
 
         <h2 className="text-2xl mb-6">
-          Ajouter une radio
+          {editingName !== null ? `Modifier — ${editingName}` : 'Ajouter une radio'}
         </h2>
 
         <div className="grid grid-cols-3 gap-4">
@@ -380,14 +411,22 @@ export default function RadiosPage() {
 
         </div>
 
-        <button
-          onClick={addRadio}
-          className="mt-4 bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-6 py-3"
-        >
-
-          Ajouter
-
-        </button>
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={saveRadio}
+            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-6 py-3"
+          >
+            {editingName !== null ? 'Enregistrer' : 'Ajouter'}
+          </button>
+          {editingName !== null && (
+            <button
+              onClick={cancelEdit}
+              className="bg-white/10 hover:bg-white/20 transition-all rounded-2xl px-6 py-3"
+            >
+              Annuler
+            </button>
+          )}
+        </div>
 
       </div>
 
