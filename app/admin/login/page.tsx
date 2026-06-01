@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black flex items-center justify-center">
       <div className="glass-card rounded-3xl p-10 w-96 flex flex-col items-center gap-6">
-        <h1 className="text-3xl font-thin text-white">⚙️ Admin</h1>
+        <h1 className="text-3xl font-thin text-white">Admin</h1>
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
           <input
             type="password"

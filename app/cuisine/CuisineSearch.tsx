@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Utensils } from 'lucide-react'
 
 type Country = { code: string; name: string; flag: string; recipe_count: number }
 type Recipe = {
@@ -109,8 +110,8 @@ export default function CuisineSearch() {
                   className="w-full h-28 object-cover rounded-xl mb-3"
                 />
               ) : (
-                <div className="w-full h-28 rounded-xl mb-3 bg-white/5 flex items-center justify-center text-4xl">
-                  {r.emoji ?? '🍽️'}
+                <div className="w-full h-28 rounded-xl mb-3 bg-white/5 flex items-center justify-center">
+                  <Utensils size={36} className="text-zinc-600" />
                 </div>
               )}
               <div className="text-sm font-semibold leading-tight">{r.name}</div>

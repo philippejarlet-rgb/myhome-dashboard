@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ClipboardList } from 'lucide-react'
 
 type Todo = {
   text: string
@@ -54,9 +55,7 @@ export default function TodoWidget() {
               }`}
             >
 
-             <span className="text-sm">
-              📝
-            </span>
+             <ClipboardList size={14} className="text-zinc-400 shrink-0" />
 
               <span>
                 {todo.text}

@@ -63,7 +63,7 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
       <div className="flex items-center justify-between mb-10">
-        <h1 className="text-5xl font-thin">⚙️ Administration</h1>
+        <h1 className="text-5xl font-thin">Administration</h1>
         <button onClick={logout} className="glass-card rounded-2xl px-4 py-2 text-sm hover:text-red-400 transition-all">
           Déconnexion
         </button>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Hls from 'hls.js'
+import { Square, Star, Camera, Check } from 'lucide-react'
 
 type Radio = {
   name: string
@@ -304,7 +305,8 @@ export default function RadiosPage() {
     className="text-yellow-400 text-sm hover:text-yellow-300"
   >
 
-    {radio.favorite ? '★ Favori' : '☆ Favori'}
+    <Star size={14} className={radio.favorite ? 'fill-yellow-400 text-yellow-400' : 'text-yellow-400'} />
+    <span>{radio.favorite ? 'Favori' : 'Favori'}</span>
 
   </button>
 
@@ -353,13 +355,8 @@ export default function RadiosPage() {
           className="bg-red-500/70 hover:bg-red-400 transition-all rounded-2xl p-6 flex flex-col items-center justify-center gap-3"
         >
 
-          <span className="text-4xl">
-            ⏹
-          </span>
-
-          <span>
-            Stop
-          </span>
+          <Square size={36} />
+          <span>Stop</span>
 
         </button>
 
@@ -402,7 +399,7 @@ export default function RadiosPage() {
               disabled={uploadingLogo}
               className="bg-black/20 rounded-xl px-4 py-3 flex-1 text-left disabled:opacity-50"
             >
-              {uploadingLogo ? 'Upload...' : newLogo ? '✓ Logo uploadé' : '📷 Choisir un logo'}
+              {uploadingLogo ? 'Upload...' : newLogo ? <><Check size={14} className="inline mr-1" />Logo uploadé</> : <><Camera size={14} className="inline mr-1" />Choisir un logo</>}
             </button>
             {newLogo && (
               <img src={newLogo} className="h-10 w-10 object-contain rounded-lg" />

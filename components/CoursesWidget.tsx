@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ShoppingBasket } from 'lucide-react'
 
 type Item = {
   text: string
@@ -50,7 +51,7 @@ export default function CoursesWidget() {
               className="flex items-center gap-3"
             >
 
-              <span>🛒</span>
+              <ShoppingBasket size={14} className="text-zinc-400 shrink-0" />
 
               <span>
                 {item.text}

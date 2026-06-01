@@ -4,6 +4,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import {
+  RefreshCw, CloudSun, ListTodo, ShoppingCart, Music2,
+  Globe, Newspaper, Camera, Maximize2, Minimize2, LogOut
+} from 'lucide-react'
 
 export default function BottomBar() {
   const router = useRouter()
@@ -24,14 +28,14 @@ export default function BottomBar() {
   }
 
   const items = [
-    { icon: '🌤️', label: 'Météo', href: '/weather' },
-    { icon: '📝', label: 'Todo', href: '/todo' },
-    { icon: '🛒', label: 'Courses', href: '/courses' },
-    { icon: '🎵', label: 'Radios', href: '/radios' },
+    { icon: <CloudSun size={26} />, label: 'Météo', href: '/weather' },
+    { icon: <ListTodo size={26} />, label: 'Todo', href: '/todo' },
+    { icon: <ShoppingCart size={26} />, label: 'Courses', href: '/courses' },
+    { icon: <Music2 size={26} />, label: 'Radios', href: '/radios' },
     { icon: null, label: 'Atlas-Culinaire', href: '/cuisine' },
     { icon: null, label: 'Recettes-Monde', href: null },
-    { icon: '📰', label: 'News', href: '/news' },
-    { icon: '📸', label: 'Photos', href: '/photos' },
+    { icon: <Newspaper size={26} />, label: 'News', href: '/news' },
+    { icon: <Camera size={26} />, label: 'Photos', href: '/photos' },
   ]
 
   const [recetteLoading, setRecetteLoading] = useState(false)
@@ -53,32 +57,26 @@ export default function BottomBar() {
     router.push('/login')
   }
 
+  const btnClass = "flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
+
   return (
     <div className="fixed bottom-0 left-3 right-3 z-50">
       <div className="glass-card rounded-3xl px-8 py-4 flex justify-between items-center">
 
-        <button
-          onClick={() => window.location.reload()}
-          className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-        >
-          <span className="text-2xl">🔄</span>
+        <button onClick={() => window.location.reload()} className={btnClass}>
+          <RefreshCw size={26} />
           <span>Refresh</span>
         </button>
 
         {items.map((item) => {
           if (item.label === 'Recettes-Monde') {
             return (
-              <button
-                key={item.label}
-                onClick={handleRecetteMonde}
-                className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-                title="Recette surprise du monde"
-              >
+              <button key={item.label} onClick={handleRecetteMonde} className={btnClass} title="Recette surprise du monde">
                 <Image
                   src="https://atlasculinaire.com/favicon.ico"
                   alt="Atlas Culinaire"
-                  width={28}
-                  height={28}
+                  width={26}
+                  height={26}
                   className={recetteLoading ? 'opacity-50 animate-pulse' : ''}
                   unoptimized
                 />
@@ -88,41 +86,27 @@ export default function BottomBar() {
           }
           if (item.label === 'Atlas-Culinaire') {
             return (
-              <Link
-                key={item.label}
-                href="/cuisine"
-                className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-              >
-                <span className="text-2xl">🌍</span>
+              <Link key={item.label} href="/cuisine" className={btnClass}>
+                <Globe size={26} />
                 <span>Atlas-Culinaire</span>
               </Link>
             )
           }
           return (
-            <Link
-              key={item.label}
-              href={item.href!}
-              className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-            >
-              <span className="text-2xl">{item.icon}</span>
+            <Link key={item.label} href={item.href!} className={btnClass}>
+              {item.icon}
               <span>{item.label}</span>
             </Link>
           )
         })}
 
-        <button
-          onClick={toggleFullscreen}
-          className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-        >
-          <span className="text-2xl">{isFullscreen ? '⛶' : '⛶'}</span>
-          <span>{isFullscreen ? 'Quitter' : 'Plein écran'}</span>
+        <button onClick={toggleFullscreen} className={btnClass}>
+          {isFullscreen ? <Minimize2 size={26} /> : <Maximize2 size={26} />}
+          <span>{isFullscreen ? 'Réduire' : 'Plein écran'}</span>
         </button>
 
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center gap-2 text-sm text-zinc-400 hover:text-red-400 hover:scale-110 transition-all"
-        >
-          <span className="text-2xl">🔒</span>
+        <button onClick={handleLogout} className="flex flex-col items-center gap-2 text-sm text-zinc-400 hover:text-red-400 hover:scale-110 transition-all">
+          <LogOut size={26} />
           <span>Quitter</span>
         </button>
 

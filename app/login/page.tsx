@@ -28,7 +28,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black flex items-center justify-center">
       <div className="glass-card rounded-3xl p-10 w-96 flex flex-col items-center gap-6">
-        <div className="text-5xl">🏠</div>
+        <img src="/android-chrome-192x192.png" alt="MyHome" className="w-16 h-16" />
         <h1 className="text-3xl font-thin text-white tracking-widest">MYHOME</h1>
         <p className="text-zinc-400 text-sm">Accès privé</p>
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
+import { Square, Volume1, Volume2 } from 'lucide-react'
 
 type Radio = {
   name: string
@@ -121,13 +122,8 @@ export default function RadioWidget() {
           }`}
         >
 
-          <span className="text-3xl">
-            ⏹
-          </span>
-
-          <span>
-            Stop
-          </span>
+          <Square size={28} />
+          <span>Stop</span>
 
         </button>
 
@@ -135,7 +131,7 @@ export default function RadioWidget() {
 
       {/* Volume slider — Option C */}
       <div className="flex items-center gap-3 mt-6 opacity-60 active:opacity-100 transition-opacity">
-        <span className="text-base">🔈</span>
+        <Volume1 size={18} />
         <input
           type="range"
           min="0"
@@ -151,7 +147,7 @@ export default function RadioWidget() {
             background: `linear-gradient(to right, rgba(6,182,212,0.8) ${volume}%, rgba(255,255,255,0.15) ${volume}%)`
           }}
         />
-        <span className="text-base">🔊</span>
+        <Volume2 size={18} />
       </div>
 
       <audio ref={audioRef} />

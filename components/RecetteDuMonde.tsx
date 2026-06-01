@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Shuffle, Utensils } from 'lucide-react'
 
 type Recipe = {
   id: string
@@ -35,10 +36,10 @@ export default function RecetteDuMonde() {
         <h2 className="text-base">Recettes du monde</h2>
         <button
           onClick={load}
-          className="text-zinc-500 hover:text-white transition-all text-lg leading-none"
+          className="text-white hover:text-zinc-300 transition-all"
           title="Autre recette"
         >
-          🔀
+          <Shuffle size={16} />
         </button>
       </div>
 
@@ -61,7 +62,7 @@ export default function RecetteDuMonde() {
               />
             ) : (
               <div className="w-full h-full rounded-2xl bg-white/5 flex items-center justify-center text-4xl">
-                {recipe.emoji ?? '🍽️'}
+                <Utensils size={32} className="text-zinc-500" />
               </div>
             )}
           </div>

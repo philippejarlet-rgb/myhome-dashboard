@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
 import { useRouter } from 'next/navigation'
+import { Share2, Check } from 'lucide-react'
 
 type Todo = {
   text: string
@@ -177,7 +177,7 @@ export default function TodoPage() {
           onClick={shareTodos}
           className="glass-card rounded-2xl px-5 py-3 hover:scale-105 transition-all"
         >
-          📤 Partager
+          <Share2 size={18} className="inline mr-2" />Partager
         </button>
 
       </div>
@@ -245,7 +245,7 @@ export default function TodoPage() {
                 }`}
               >
 
-                {todo.checked && '✓'}
+                {todo.checked && <Check size={14} />}
 
               </div>
 

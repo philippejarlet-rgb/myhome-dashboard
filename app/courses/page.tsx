@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Share2, Check } from 'lucide-react'
 
 type Item = {
   text: string
@@ -194,7 +195,7 @@ const shareCourses = async () => {
     onClick={shareCourses}
     className="ml-auto glass-card rounded-2xl px-5 py-3 hover:scale-105 transition-all"
   >
-    📤 Partager
+    <Share2 size={18} className="inline mr-2" />Partager
   </button>
 
 </div>
@@ -305,7 +306,7 @@ const shareCourses = async () => {
                 }`}
               >
 
-                {item.checked && '✓'}
+                {item.checked && <Check size={14} />}
 
               </button>
 

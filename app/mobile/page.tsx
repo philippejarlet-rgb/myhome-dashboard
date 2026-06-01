@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
+import { RefreshCw, Home, ShoppingCart, ListTodo, Radio } from 'lucide-react'
 
 type Tab = 'home' | 'courses' | 'todo' | 'radios'
 
@@ -120,10 +121,10 @@ export default function MobilePage() {
   const deleteCourse = (i: number) => saveCourses(courses.filter((_, idx) => idx !== i), history)
 
   const tabs = [
-    { id: 'home' as Tab, icon: '🏠', label: 'MyHome' },
-    { id: 'courses' as Tab, icon: '🛒', label: 'Courses' },
-    { id: 'todo' as Tab, icon: '📝', label: 'Todo' },
-    { id: 'radios' as Tab, icon: '🎵', label: 'Radios' },
+    { id: 'home' as Tab, icon: <Home size={22} />, label: 'MyHome' },
+    { id: 'courses' as Tab, icon: <ShoppingCart size={22} />, label: 'Courses' },
+    { id: 'todo' as Tab, icon: <ListTodo size={22} />, label: 'Todo' },
+    { id: 'radios' as Tab, icon: <Radio size={22} />, label: 'Radios' },
   ]
 
   return (
@@ -135,7 +136,7 @@ export default function MobilePage() {
           onClick={() => window.location.reload()}
           className="flex flex-col items-center gap-1 py-4 px-3 text-sm text-zinc-400 active:text-white transition-all"
         >
-          <span className="text-2xl">🔄</span>
+          <RefreshCw size={22} />
           <span>Refresh</span>
         </button>
         {tabs.map(tab => (
@@ -146,7 +147,7 @@ export default function MobilePage() {
               activeTab === tab.id ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-zinc-400'
             }`}
           >
-            <span className="text-2xl">{tab.icon}</span>
+            {tab.icon}
             <span>{tab.label}</span>
           </button>
         ))}
@@ -159,11 +160,12 @@ export default function MobilePage() {
         {activeTab === 'home' && (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center gap-2 py-4">
-              <div className="text-5xl">🏠</div>
+              <img src="/android-chrome-192x192.png" alt="MyHome" className="w-20 h-20" />
               <h1 className="text-2xl font-thin tracking-widest">MYHOME</h1>
+              <p className="text-xs text-zinc-500 italic text-center">Parce qu'une maison, c'est plus que quatre murs.</p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-3xl p-4">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">📝 Todo</h2>
+              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">Todo</h2>
               {todos.filter(t => !t.checked).length === 0 ? (
                 <p className="text-zinc-500 text-sm">Aucune tâche 🎉</p>
               ) : (
@@ -177,7 +179,7 @@ export default function MobilePage() {
               )}
             </div>
             <div className="bg-white/5 border border-white/10 rounded-3xl p-4">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">🛒 Courses</h2>
+              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">Courses</h2>
               {courses.filter(c => !c.checked).length === 0 ? (
                 <p className="text-zinc-500 text-sm">Aucune course 😊</p>
               ) : (
