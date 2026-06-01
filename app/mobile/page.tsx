@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
-import { RefreshCw, Home, ShoppingCart, ListTodo, Radio } from 'lucide-react'
+import { RefreshCw, Home, ShoppingCart, ListTodo, Radio, ClipboardList, ShoppingBasket } from 'lucide-react'
 
 type Tab = 'home' | 'courses' | 'todo' | 'radios'
 
@@ -172,7 +172,7 @@ export default function MobilePage() {
                 <ul className="flex flex-col gap-2">
                   {todos.filter(t => !t.checked).map((todo, i) => (
                     <li key={todo.text + i} className="flex items-center gap-2 text-sm">
-                      <span className="text-zinc-400">◻</span><span>{todo.text}</span>
+                      <ClipboardList size={14} className="text-zinc-400 shrink-0" /><span>{todo.text}</span>
                     </li>
                   ))}
                 </ul>
@@ -186,7 +186,7 @@ export default function MobilePage() {
                 <ul className="flex flex-col gap-2">
                   {courses.filter(c => !c.checked).map((item, i) => (
                     <li key={item.text + i} className="flex items-center gap-2 text-sm">
-                      <span className="text-zinc-400">◻</span><span>{item.text}</span>
+                      <ShoppingBasket size={14} className="text-zinc-400 shrink-0" /><span>{item.text}</span>
                     </li>
                   ))}
                 </ul>
