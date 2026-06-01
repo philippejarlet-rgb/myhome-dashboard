@@ -8,6 +8,7 @@ import WeatherWidget from '@/components/WeatherWidget'
 import RadioWidget from '@/components/RadioWidget'
 import NewsTicker from '@/components/NewsTicker'
 import TodoWidget from '@/components/TodoWidget'
+import RecetteDuMonde from '@/components/RecetteDuMonde'
 import BottomBar from '@/components/BottomBar'
 
 export default function Home() {
@@ -77,8 +78,13 @@ export default function Home() {
 
         <div className="col-span-12 grid grid-cols-12 gap-4 h-[300px]">
 
-          <div className="col-span-3 h-full">
-            <ClockWidget />
+          <div className="col-span-3 h-[300px] flex flex-col gap-4">
+            <div className="h-[160px]">
+              <ClockWidget />
+            </div>
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <TodoWidget />
+            </div>
           </div>
 
           <div className="col-span-5 h-full">
@@ -88,7 +94,7 @@ export default function Home() {
           <div className="col-span-4 h-[300px] flex flex-col gap-4">
 
             <div className="h-[160px]">
-              <TodoWidget />
+              <RecetteDuMonde />
             </div>
 
             <div className="flex-1 min-h-0">

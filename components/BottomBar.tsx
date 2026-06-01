@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 export default function BottomBar() {
   const router = useRouter()
@@ -27,10 +28,25 @@ export default function BottomBar() {
     { icon: '📝', label: 'Todo', href: '/todo' },
     { icon: '🛒', label: 'Courses', href: '/courses' },
     { icon: '🎵', label: 'Radios', href: '/radios' },
-    { icon: '🌍', label: 'Atlas', href: 'https://atlasculinaire.com/' },
+    { icon: null, label: 'Atlas-Culinaire', href: '/cuisine' },
+    { icon: null, label: 'Recettes-Monde', href: null },
     { icon: '📰', label: 'News', href: '/news' },
     { icon: '📸', label: 'Photos', href: '/photos' },
   ]
+
+  const [recetteLoading, setRecetteLoading] = useState(false)
+
+  const handleRecetteMonde = async () => {
+    if (recetteLoading) return
+    setRecetteLoading(true)
+    try {
+      const res = await fetch('/api/cuisine/random')
+      const recipe = await res.json()
+      if (recipe?.url) window.open(recipe.url, '_blank', 'noopener,noreferrer')
+    } finally {
+      setRecetteLoading(false)
+    }
+  }
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -49,17 +65,50 @@ export default function BottomBar() {
           <span>Refresh</span>
         </button>
 
-        {items.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            target={item.label === 'Atlas' ? '_blank' : '_self'}
-            className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
-          >
-            <span className="text-2xl">{item.icon}</span>
-            <span>{item.label}</span>
-          </Link>
-        ))}
+        {items.map((item) => {
+          if (item.label === 'Recettes-Monde') {
+            return (
+              <button
+                key={item.label}
+                onClick={handleRecetteMonde}
+                className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
+                title="Recette surprise du monde"
+              >
+                <Image
+                  src="https://atlasculinaire.com/favicon.ico"
+                  alt="Atlas Culinaire"
+                  width={28}
+                  height={28}
+                  className={recetteLoading ? 'opacity-50 animate-pulse' : ''}
+                  unoptimized
+                />
+                <span>Recettes-Monde</span>
+              </button>
+            )
+          }
+          if (item.label === 'Atlas-Culinaire') {
+            return (
+              <Link
+                key={item.label}
+                href="/cuisine"
+                className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
+              >
+                <span className="text-2xl">🌍</span>
+                <span>Atlas-Culinaire</span>
+              </Link>
+            )
+          }
+          return (
+            <Link
+              key={item.label}
+              href={item.href!}
+              className="flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
+            >
+              <span className="text-2xl">{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          )
+        })}
 
         <button
           onClick={toggleFullscreen}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Item = {
   text: string
@@ -9,6 +10,7 @@ type Item = {
 
 export default function CoursesWidget() {
 
+  const router = useRouter()
   const [items, setItems] = useState<Item[]>([])
 
   useEffect(() => {
@@ -23,13 +25,13 @@ export default function CoursesWidget() {
 
   return (
 
-    <div className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden">
+    <div onClick={() => router.push('/courses')} className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden cursor-pointer">
 
       <h2 className="text-base mb-2 shrink-0">
         Courses
       </h2>
 
-      <div className="flex-1 min-h-0 overflow-y-auto pr-2">
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.15) transparent' }}>
 
         <ul className="space-y-3 text-sm">
 

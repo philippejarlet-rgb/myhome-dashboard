@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Todo = {
   text: string
@@ -9,6 +10,7 @@ type Todo = {
 
 export default function TodoWidget() {
 
+  const router = useRouter()
   const [todos, setTodos] = useState<Todo[]>([])
 
   // LOAD
@@ -22,13 +24,13 @@ export default function TodoWidget() {
 
   return (
 
-    <div className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden">
+    <div onClick={() => router.push('/todo')} className="widget-hover glass-card rounded-3xl p-4 shadow-2xl h-full flex flex-col overflow-hidden cursor-pointer">
 
       <h2 className="text-base mb-2 shrink-0">
         Todo
       </h2>
 
-      <div className="flex-1 min-h-0 overflow-y-auto pr-2 scrollbar-thin">
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.15) transparent' }}>
 
         <ul className="space-y-3 text-sm">
 
