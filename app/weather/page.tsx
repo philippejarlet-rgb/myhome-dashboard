@@ -202,12 +202,12 @@ export default function WeatherPage() {
               }
             }}
             placeholder="Ajouter une ville..."
-            className="flex-1 bg-black/20 rounded-2xl px-6 py-4 outline-none text-xl"
+            className="flex-1 bg-black/20 rounded-2xl px-4 md:px-6 py-4 outline-none text-base md:text-xl"
           />
 
           <button
             onClick={addCity}
-            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-8 py-4 text-xl"
+            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-4 md:px-8 py-4 text-base md:text-xl"
           >
             Ajouter
           </button>
@@ -234,7 +234,7 @@ export default function WeatherPage() {
               ✕
             </button>
 
-            <h2 className="text-2xl">
+            <h2 className="text-lg md:text-2xl">
               {city.name}
             </h2>
 
