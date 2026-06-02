@@ -41,11 +41,11 @@ export default function PhotosPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between gap-6 mb-10">
-        <div className="flex items-center gap-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 mb-6 md:mb-10">
+        <div className="flex items-center gap-3 md:gap-6">
           <button
             onClick={() => router.push('/')}
             className="glass-card rounded-2xl px-4 py-2 hover:scale-105 transition-all"
@@ -53,8 +53,8 @@ export default function PhotosPage() {
             ← Retour
           </button>
           <div>
-            <h1 className="text-6xl font-thin">Photos</h1>
-            <p className="text-zinc-400 mt-2 text-xl">Galerie immersive MYHOME</p>
+            <h1 className="text-3xl md:text-6xl font-thin">Photos</h1>
+            <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">Galerie immersive MYHOME</p>
           </div>
         </div>
         <div>
@@ -80,9 +80,9 @@ export default function PhotosPage() {
       {photos.length === 0 ? (
         <p className="text-zinc-500 text-center mt-20 text-xl">Aucune photo</p>
       ) : (
-        <div className="grid grid-cols-3 gap-4 overflow-y-auto max-h-[75vh] pr-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[65vh] md:max-h-[75vh] pr-2">
           {photos.map((filename) => (
-            <div key={filename} className="group relative overflow-hidden rounded-3xl h-56">
+            <div key={filename} className="group relative overflow-hidden rounded-3xl h-36 md:h-56">
               <button
                 onClick={() => setSelectedImage(photoUrl(filename))}
                 className="w-full h-full"
