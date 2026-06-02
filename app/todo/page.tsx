@@ -165,7 +165,7 @@ export default function TodoPage() {
               Todo
             </h1>
 
-            <p className="text-zinc-400 mt-1 text-sm md:text-xl">
+            <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
               Organisation MYHOME
             </p>
 
@@ -233,7 +233,7 @@ export default function TodoPage() {
 
             <button
               onClick={() => toggleTodo(index)}
-              className="flex items-center gap-6 flex-1 text-left"
+              className="flex items-center gap-3 md:gap-6 flex-1 text-left"
             >
 
               <div
@@ -250,7 +250,7 @@ export default function TodoPage() {
               </div>
 
               <span
-                className={`text-2xl
+                className={`text-lg md:text-2xl
                 ${
                   todo.checked
                     ? 'line-through text-zinc-500'
