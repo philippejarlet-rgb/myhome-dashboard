@@ -267,7 +267,7 @@ export default function RadiosPage() {
 
             <img
   src={radio.logo}
-  className="h-20 object-contain"
+  className="h-14 md:h-20 object-contain"
 />
 
 <div className="flex flex-col items-center gap-2">

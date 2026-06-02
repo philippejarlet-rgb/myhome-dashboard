@@ -177,7 +177,7 @@ export default function WeatherPage() {
             Weather
           </h1>
 
-          <p className="text-zinc-400 mt-1 text-sm md:text-xl">
+          <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
             Prévisions météo MYHOME
           </p>
 
