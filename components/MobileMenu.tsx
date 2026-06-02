@@ -19,6 +19,7 @@ export default function MobileMenu() {
     setRecetteLoading(true)
     try {
       const res = await fetch('/api/cuisine/random')
+      if (!res.ok) return
       const recipe = await res.json()
       if (recipe?.url) window.open(recipe.url, '_blank', 'noopener,noreferrer')
     } finally {
@@ -69,7 +70,7 @@ export default function MobileMenu() {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-4 flex flex-col gap-1">
           <button
-            onClick={() => { window.location.reload(); setOpen(false) }}
+            onClick={() => window.location.reload()}
             className={linkClass}
           >
             <RefreshCw size={22} />
