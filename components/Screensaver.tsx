@@ -103,7 +103,7 @@ export default function Screensaver({ onWake }: Props) {
         <img
           src={images[currentImage]}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 scale-105 animate-slowzoom"
+          className="absolute inset-0 w-full h-full object-contain transition-opacity duration-1000"
         />
       ) : (
         <div className="absolute inset-0 bg-black" />
@@ -115,8 +115,8 @@ export default function Screensaver({ onWake }: Props) {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white">
         <div className="text-center animate-fadein">
-          <h1 className="text-[12rem] font-thin tracking-wider">{time}</h1>
-          <p className="text-3xl text-zinc-200 mt-6">{weatherText}</p>
+          <h1 className="text-[6rem] font-thin tracking-wider">{time}</h1>
+          <p className="text-2xl text-zinc-200 mt-4">{weatherText}</p>
         </div>
       </div>
     </div>
