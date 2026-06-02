@@ -57,7 +57,7 @@ export default function PhotosPage() {
             <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">Galerie immersive MYHOME</p>
           </div>
         </div>
-        <div>
+        <div className="w-full md:w-auto">
           <input
             ref={inputRef}
             type="file"
@@ -69,7 +69,7 @@ export default function PhotosPage() {
           <button
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="glass-card rounded-2xl px-6 py-3 hover:scale-105 transition-all disabled:opacity-50"
+            className="glass-card rounded-2xl px-6 py-3 hover:scale-105 transition-all disabled:opacity-50 w-full md:w-auto"
           >
             {uploading ? 'Envoi en cours...' : '+ Ajouter des photos'}
           </button>
