@@ -38,7 +38,7 @@ export default function MobileMenu() {
     <>
       {/* Header bar mobile — logo + titre + hamburger */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden glass-card px-4 py-2 flex items-center justify-between">
-        <Image
+        <img
           src="/android-chrome-192x192.png"
           alt="MyHome"
           width={40}
