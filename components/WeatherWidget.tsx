@@ -99,7 +99,7 @@ export default function WeatherWidget() {
 
         {/* LEFT — ville principale */}
 
-        <div className="w-[26%] shrink-0 flex flex-col gap-2">
+        <div className="w-full md:w-[26%] shrink-0 flex flex-col gap-2">
 
           <h2 className="text-2xl truncate">
             {weather.name}
