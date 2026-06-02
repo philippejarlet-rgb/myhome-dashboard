@@ -158,11 +158,11 @@ export default function WeatherPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
       {/* HEADER */}
 
-      <div className="flex items-center gap-6 mb-10">
+      <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">
 
         <button
           onClick={() => router.push('/')}
@@ -173,11 +173,11 @@ export default function WeatherPage() {
 
         <div>
 
-          <h1 className="text-6xl font-thin">
+          <h1 className="text-3xl md:text-6xl font-thin">
             Weather
           </h1>
 
-          <p className="text-zinc-400 mt-2 text-xl">
+          <p className="text-zinc-400 mt-1 text-sm md:text-xl">
             Prévisions météo MYHOME
           </p>
 
@@ -187,7 +187,7 @@ export default function WeatherPage() {
 
       {/* ADD CITY */}
 
-      <div className="glass-card rounded-3xl p-6 mb-10">
+      <div className="glass-card rounded-3xl p-4 md:p-6 mb-6 md:mb-10">
 
         <div className="flex gap-4">
 
@@ -218,13 +218,13 @@ export default function WeatherPage() {
 
       {/* GRID */}
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
         {cities.map((city, index) => (
 
           <div
             key={city.name}
-            className="glass-card rounded-3xl p-8 relative flex flex-col"
+            className="glass-card rounded-3xl p-4 md:p-8 relative flex flex-col"
           >
 
             <button
@@ -238,7 +238,7 @@ export default function WeatherPage() {
               {city.name}
             </h2>
 
-            <p className="text-7xl mt-6 font-thin">
+            <p className="text-4xl md:text-7xl mt-3 md:mt-6 font-thin">
               {city.temp}
             </p>
 
