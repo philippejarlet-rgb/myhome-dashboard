@@ -133,7 +133,7 @@ export default function WeatherWidget() {
 
           {/* Villes */}
 
-          <div className="flex gap-2 flex-1">
+          <div className="hidden md:flex gap-2 flex-1">
 
             {citiesWeather.map((city) => (
 
@@ -162,7 +162,7 @@ export default function WeatherWidget() {
 
           {/* Prévisions */}
 
-          <div className="flex gap-2">
+          <div className="hidden md:flex gap-2">
 
             {forecast.map((item, index) => (
 
