@@ -10,6 +10,7 @@ import NewsTicker from '@/components/NewsTicker'
 import TodoWidget from '@/components/TodoWidget'
 import RecetteDuMonde from '@/components/RecetteDuMonde'
 import BottomBar from '@/components/BottomBar'
+import MobileMenu from '@/components/MobileMenu'
 
 export default function Home() {
 
@@ -57,7 +58,7 @@ export default function Home() {
   return (
 
     <main
-      className={`min-h-screen overflow-hidden bg-gradient-to-br ${backgroundClass} text-white p-3`}
+      className={`min-h-screen overflow-y-auto md:overflow-hidden bg-gradient-to-br ${backgroundClass} text-white p-3`}
     >
 
       {/* BACKGROUND */}
@@ -72,48 +73,43 @@ export default function Home() {
 
       {/* GRID */}
 
-      <div className="relative grid grid-cols-12 gap-4">
+      <div className="relative grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4">
 
-        {/* TOP ROW FIXED HEIGHT */}
-
-        <div className="col-span-12 grid grid-cols-12 gap-4 h-[300px]">
-
-          <div className="col-span-3 h-[300px] flex flex-col gap-4">
-            <div className="h-[160px]">
-              <ClockWidget />
-            </div>
-            <div className="flex-1 min-h-0 overflow-hidden">
-              <TodoWidget />
-            </div>
-          </div>
-
-          <div className="col-span-5 h-full">
-            <WeatherWidget />
-          </div>
-
-          <div className="col-span-4 h-[300px] flex flex-col gap-4">
-
-            <div className="h-[160px]">
-              <RecetteDuMonde />
-            </div>
-
-            <div className="flex-1 min-h-0">
-              <CoursesWidget />
-            </div>
-
-          </div>
-
+        {/* Clock — mobile: 1er, desktop: col 1-3 row 1 */}
+        <div className="order-1 md:order-none md:col-span-3 md:h-[160px]">
+          <ClockWidget />
         </div>
 
-        {/* RADIO */}
+        {/* Weather — mobile: 2e, desktop: col 4-8 rows 1-2 */}
+        <div className="order-2 md:order-none md:col-span-5 md:row-span-2 md:h-[300px]">
+          <WeatherWidget />
+        </div>
 
-        <div className="col-span-12">
+        {/* Recette du Monde — mobile: 5e, desktop: col 9-12 row 1 */}
+        <div className="order-5 md:order-none md:col-span-4 md:h-[160px]">
+          <RecetteDuMonde />
+        </div>
+
+        {/* Todo — mobile: 3e, desktop: col 1-3 row 2 */}
+        <div className="order-3 md:order-none md:col-span-3">
+          <TodoWidget />
+        </div>
+
+        {/* Courses — mobile: 4e, desktop: col 9-12 row 2 */}
+        <div className="order-4 md:order-none md:col-span-4">
+          <CoursesWidget />
+        </div>
+
+        {/* Radio — mobile: 6e, desktop: col 1-12 row 3 */}
+        <div className="order-6 md:order-none md:col-span-12">
           <RadioWidget />
         </div>
 
       </div>
 
       <BottomBar />
+
+      <MobileMenu />
 
       <NewsTicker />
 
