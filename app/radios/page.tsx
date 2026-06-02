@@ -220,9 +220,9 @@ export default function RadiosPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
-      <div className="flex items-center gap-6 mb-10">
+      <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">
 
         <button
           onClick={() => {
@@ -236,11 +236,11 @@ export default function RadiosPage() {
 
         <div>
 
-          <h1 className="text-6xl font-thin">
+          <h1 className="text-3xl md:text-6xl font-thin">
             Radios
           </h1>
 
-          <p className="text-zinc-400 mt-2 text-xl">
+          <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
             Gestion des radios MYHOME
           </p>
 
@@ -250,14 +250,14 @@ export default function RadiosPage() {
 
       {/* RADIOS */}
 
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
 
         {radios.map((radio) => (
 
           <div
             key={radio.name}
             onClick={() => playRadio(radio)}
-            className={`transition-all rounded-2xl p-6 flex flex-col items-center justify-center gap-3
+            className={`transition-all rounded-2xl p-3 md:p-6 flex flex-col items-center justify-center gap-3
             ${
               activeRadio === radio.name
                 ? 'bg-cyan-500/30 border border-cyan-400 shadow-cyan-500/30 shadow-2xl'
@@ -364,13 +364,13 @@ export default function RadiosPage() {
 
       {/* ADD / EDIT */}
 
-      <div ref={formRef} className="glass-card rounded-3xl p-6">
+      <div ref={formRef} className="glass-card rounded-3xl p-4 md:p-6">
 
         <h2 className="text-2xl mb-6">
           {editingName !== null ? `Modifier — ${editingName}` : 'Ajouter une radio'}
         </h2>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
 
           <input
             value={newName}
