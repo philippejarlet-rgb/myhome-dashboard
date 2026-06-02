@@ -55,18 +55,18 @@ export default function CuisineSearch() {
   return (
     <>
       {/* Barre de recherche */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 mb-6">
         <input
           value={q}
           onChange={e => setQ(e.target.value)}
           placeholder="Rechercher une recette… (tajine, curry, risotto…)"
-          className="glass-card rounded-2xl px-6 py-4 flex-1 bg-transparent text-xl outline-none placeholder:text-zinc-600"
+          className="glass-card rounded-2xl px-6 py-4 w-full md:flex-1 bg-transparent text-base md:text-xl outline-none placeholder:text-zinc-600"
         />
-        <div className="relative">
+        <div className="relative w-full md:w-auto">
           <select
             value={country}
             onChange={e => setCountry(e.target.value)}
-            className="glass-card rounded-2xl pl-5 pr-10 py-4 text-base outline-none cursor-pointer appearance-none"
+            className="glass-card rounded-2xl pl-5 pr-10 py-4 text-base outline-none cursor-pointer appearance-none w-full md:w-auto"
             style={{ background: '#1e293b', color: 'white' }}
           >
             <option value="" style={{ background: '#1e293b', color: 'white' }}>🌍 Tous les pays</option>
