@@ -19,7 +19,7 @@ export default function NewsTicker() {
   const items = [...news, ...news]
 
   return (
-    <div className="fixed left-0 w-full z-50 flex items-stretch overflow-hidden" style={{ bottom: 'calc(6rem + 5px)', background: 'linear-gradient(to right, #7f1d1d, #b91c1c)', contain: 'layout' }}>
+    <div className="hidden md:flex fixed left-0 w-full z-50 items-stretch overflow-hidden" style={{ bottom: 'calc(6rem + 5px)', background: 'linear-gradient(to right, #7f1d1d, #b91c1c)', contain: 'layout' }}>
 
       {/* Label fixe */}
       <div className="shrink-0 flex items-center px-4 border-r border-white/30"
