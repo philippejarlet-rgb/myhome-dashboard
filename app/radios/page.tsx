@@ -352,7 +352,7 @@ export default function RadiosPage() {
 
         <button
           onClick={stopRadio}
-          className="bg-red-500/70 hover:bg-red-400 transition-all rounded-2xl p-6 flex flex-col items-center justify-center gap-3"
+          className="bg-red-500/70 hover:bg-red-400 transition-all rounded-2xl p-3 md:p-6 flex flex-col items-center justify-center gap-3"
         >
 
           <Square size={36} />
