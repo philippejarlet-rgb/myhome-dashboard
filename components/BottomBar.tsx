@@ -60,7 +60,7 @@ export default function BottomBar() {
   const btnClass = "flex flex-col items-center gap-2 text-sm text-zinc-300 hover:text-white hover:scale-110 transition-all"
 
   return (
-    <div className="fixed bottom-0 left-3 right-3 z-50">
+    <div className="hidden md:block fixed bottom-0 left-3 right-3 z-50">
       <div className="glass-card rounded-3xl px-8 py-4 flex justify-between items-center">
 
         <button onClick={() => window.location.reload()} className={btnClass}>
