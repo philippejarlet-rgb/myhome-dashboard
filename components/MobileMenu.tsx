@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   Menu, X, CloudSun, ListTodo, ShoppingCart, Music2,
-  Globe, Newspaper, Camera, RefreshCw, LogOut
+  Globe, Camera, RefreshCw, LogOut
 } from 'lucide-react'
 
 export default function MobileMenu() {
@@ -117,10 +117,6 @@ export default function MobileMenu() {
             />
             <span>Recettes du Monde</span>
           </button>
-          <Link href="/news" onClick={() => setOpen(false)} className={linkClass}>
-            <Newspaper size={22} />
-            <span>News</span>
-          </Link>
           <Link href="/photos" onClick={() => setOpen(false)} className={linkClass}>
             <Camera size={22} />
             <span>Photos</span>
