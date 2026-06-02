@@ -36,14 +36,24 @@ export default function MobileMenu() {
 
   return (
     <>
-      {/* Bouton hamburger — mobile seulement */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed top-3 right-3 z-50 md:hidden glass-card rounded-xl p-2 text-white"
-        aria-label="Menu"
-      >
-        <Menu size={24} />
-      </button>
+      {/* Header bar mobile — logo + titre + hamburger */}
+      <div className="fixed top-0 left-0 right-0 z-50 md:hidden glass-card px-4 py-2 flex items-center justify-between">
+        <Image
+          src="/android-chrome-192x192.png"
+          alt="MyHome"
+          width={40}
+          height={40}
+          className="rounded-xl"
+        />
+        <span className="text-white font-bold text-xl tracking-widest">MYHOME</span>
+        <button
+          onClick={() => setOpen(true)}
+          className="text-white p-2 rounded-xl hover:bg-white/10 transition-all"
+          aria-label="Menu"
+        >
+          <Menu size={24} />
+        </button>
+      </div>
 
       {/* Backdrop */}
       <div

@@ -99,7 +99,7 @@ export default function WeatherWidget() {
 
         {/* LEFT — ville principale */}
 
-        <div className="w-full md:w-[26%] shrink-0 flex flex-col gap-2">
+        <div className="w-[26%] shrink-0 flex flex-col gap-2">
 
           <h2 className="text-2xl truncate">
             {weather.name}
@@ -129,11 +129,11 @@ export default function WeatherWidget() {
 
         {/* RIGHT — villes comparaison (haut) + prévisions (bas) */}
 
-        <div className="hidden md:flex flex-1 flex-col gap-3">
+        <div className="flex-1 flex flex-col gap-3">
 
           {/* Villes */}
 
-          <div className="hidden md:flex gap-2 flex-1">
+          <div className="flex gap-2 flex-1">
 
             {citiesWeather.map((city) => (
 
@@ -162,7 +162,7 @@ export default function WeatherWidget() {
 
           {/* Prévisions */}
 
-          <div className="hidden md:flex gap-2">
+          <div className="flex gap-2">
 
             {forecast.map((item, index) => (
 
