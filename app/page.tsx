@@ -73,7 +73,7 @@ export default function Home() {
 
       {/* GRID */}
 
-      <div className="relative grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4">
+      <div className="relative grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 pt-14 md:pt-0">
 
         {/* Clock — mobile: 1er, desktop: col 1-3 row 1 */}
         <div className="order-1 md:order-none md:col-span-3 md:h-[160px]">
