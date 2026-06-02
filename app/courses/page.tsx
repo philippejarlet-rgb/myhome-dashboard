@@ -166,11 +166,11 @@ const shareCourses = async () => {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
       {/* HEADER */}
 
-    <div className="flex items-center gap-6 mb-10">
+    <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">
 
   <button
     onClick={() => router.push('/')}
@@ -181,11 +181,11 @@ const shareCourses = async () => {
 
   <div>
 
-    <h1 className="text-6xl font-thin">
+    <h1 className="text-3xl md:text-6xl font-thin">
       Courses
     </h1>
 
-    <p className="text-zinc-400 mt-2 text-xl">
+    <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
       Liste intelligente MYHOME
     </p>
 
@@ -202,7 +202,7 @@ const shareCourses = async () => {
 
       {/* ADD */}
 
-      <div className="glass-card rounded-3xl p-6 mb-6">
+      <div className="glass-card rounded-3xl p-4 md:p-6 mb-4 md:mb-6">
 
         <div className="flex gap-4">
 
@@ -235,12 +235,12 @@ const shareCourses = async () => {
               }
             }}
             placeholder="Ajouter un article..."
-            className="flex-1 bg-black/20 rounded-2xl px-6 py-4 outline-none text-xl"
+            className="flex-1 bg-black/20 rounded-2xl px-4 md:px-6 py-4 outline-none text-base md:text-xl"
           />
 
           <button
             onClick={addItem}
-            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-8 py-4 text-xl"
+            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-4 md:px-8 py-4 text-base md:text-xl"
           >
 
             Ajouter
@@ -286,7 +286,7 @@ const shareCourses = async () => {
 
           <div
             key={index}
-            className={`glass-card rounded-3xl p-6 flex items-center justify-between transition-all
+            className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
             ${
               item.checked
                 ? 'opacity-40 scale-[0.98]'
@@ -294,7 +294,7 @@ const shareCourses = async () => {
             }`}
           >
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 md:gap-6">
 
               <button
                 onClick={() => toggleItem(index)}
@@ -311,7 +311,7 @@ const shareCourses = async () => {
               </button>
 
               <span
-                className={`text-2xl
+                className={`text-lg md:text-2xl
                 ${
                   item.checked
                     ? 'line-through text-zinc-500'
