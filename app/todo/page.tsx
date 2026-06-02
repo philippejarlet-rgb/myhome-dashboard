@@ -141,13 +141,13 @@ export default function TodoPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex items-start md:items-center justify-between mb-6 md:mb-10">
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 md:gap-6">
 
           <button
             onClick={() => {
@@ -161,11 +161,11 @@ export default function TodoPage() {
 
           <div>
 
-            <h1 className="text-6xl font-thin">
+            <h1 className="text-3xl md:text-6xl font-thin">
               Todo
             </h1>
 
-            <p className="text-zinc-400 mt-2 text-xl">
+            <p className="text-zinc-400 mt-1 text-sm md:text-xl">
               Organisation MYHOME
             </p>
 
@@ -184,7 +184,7 @@ export default function TodoPage() {
 
       {/* ADD */}
 
-      <div className="glass-card rounded-3xl p-6 mb-8">
+      <div className="glass-card rounded-3xl p-4 md:p-6 mb-6 md:mb-8">
 
         <div className="flex gap-4">
 
@@ -199,12 +199,12 @@ export default function TodoPage() {
               }
             }}
             placeholder="Ajouter une tâche..."
-            className="flex-1 bg-black/20 rounded-2xl px-6 py-4 outline-none text-xl"
+            className="flex-1 bg-black/20 rounded-2xl px-4 md:px-6 py-4 outline-none text-base md:text-xl"
           />
 
           <button
             onClick={addTodo}
-            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-8 py-4 text-xl"
+            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-4 md:px-8 py-4 text-base md:text-xl"
           >
 
             Ajouter
@@ -223,7 +223,7 @@ export default function TodoPage() {
 
           <div
             key={index}
-            className={`glass-card rounded-3xl p-6 flex items-center justify-between transition-all
+            className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
             ${
               todo.checked
                 ? 'opacity-40 scale-[0.98]'
