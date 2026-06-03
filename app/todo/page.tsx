@@ -104,6 +104,15 @@ export default function TodoPage() {
 
   const [loaded, setLoaded] = useState(false)
 
+  const sensors = useSensors(
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    }),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    })
+  )
+
   // LOAD
 
   useEffect(() => {
@@ -154,7 +163,17 @@ export default function TodoPage() {
     }).catch(() => {})
   }, [todos, loaded])
 
- 
+  // REORDER
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    setTodos(prev => {
+      const oldIndex = prev.findIndex(t => t.text === active.id)
+      const newIndex = prev.findIndex(t => t.text === over.id)
+      return arrayMove(prev, oldIndex, newIndex)
+    })
+  }
 
   // ADD
 
