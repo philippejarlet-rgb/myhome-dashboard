@@ -42,12 +42,12 @@ function SortableTodoItem({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: String(index), disabled: todo.checked })
+  } = useSortable({ id: todo.text, disabled: todo.checked })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.3 : 1,
+    opacity: isDragging ? 0.3 : todo.checked ? 0.4 : 1,
   }
 
   return (
@@ -55,19 +55,15 @@ function SortableTodoItem({
       ref={setNodeRef}
       style={style}
       className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
-        ${todo.checked ? 'opacity-40 scale-[0.98]' : ''}`}
+        ${todo.checked ? 'scale-[0.98]' : ''}`}
     >
-      {!todo.checked && (
-        <button
-          {...attributes}
-          {...listeners}
-          className="mr-3 md:mr-4 text-zinc-500 cursor-grab active:cursor-grabbing touch-none"
-          tabIndex={-1}
-          aria-label="Réordonner"
-        >
-          <GripVertical size={20} />
-        </button>
-      )}
+      <button
+        {...(todo.checked ? {} : { ...attributes, ...listeners })}
+        className={`mr-3 md:mr-4 text-zinc-500 cursor-grab active:cursor-grabbing touch-none ${todo.checked ? 'invisible' : ''}`}
+        aria-label="Réordonner"
+      >
+        <GripVertical size={20} />
+      </button>
 
       <button
         onClick={onToggle}
@@ -90,7 +86,7 @@ function SortableTodoItem({
 
       <button
         onClick={onDelete}
-        className="text-red-400 hover:text-red-300 text-lg"
+        className="text-red-400 text-lg"
       >
         Supprimer
       </button>
