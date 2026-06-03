@@ -10,6 +10,12 @@ type Item = {
   store?: string
 }
 
+function normalizeStore(s: string): string {
+  const t = s.trim()
+  if (!t) return t
+  return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()
+}
+
 export default function CoursesPage() {
 
   const router = useRouter()
@@ -63,9 +69,16 @@ export default function CoursesPage() {
           }
         }
 
-        setItems(data.items || [])
+        const rawFav: Record<string, string> = data.favorites || {}
+        const normFav: Record<string, string> = {}
+        Object.entries(rawFav).forEach(([k, v]) => { normFav[k] = normalizeStore(v) })
+        const normItems = (data.items || []).map((it: Item) => ({
+          ...it,
+          store: it.store ? normalizeStore(it.store) : undefined,
+        }))
+        setItems(normItems)
         setHistory(data.history || [])
-        setFavorites(data.favorites || {})
+        setFavorites(normFav)
         setLoaded(true)
       } catch {
         setLoaded(true)
@@ -89,7 +102,7 @@ export default function CoursesPage() {
 
   const addItem = () => {
     if (!newItem.trim()) return
-    const storeValue = newStore.trim() || undefined
+    const storeValue = normalizeStore(newStore) || undefined
 
     setItems(prev => [...prev, { text: newItem, checked: false, store: storeValue }])
 
@@ -123,9 +136,10 @@ export default function CoursesPage() {
 
   const updateItemStore = (index: number, store: string) => {
     const text = items[index].text
-    setItems(prev => prev.map((it, i) => i === index ? { ...it, store: store || undefined } : it))
-    if (store) {
-      setFavorites(prev => ({ ...prev, [text]: store }))
+    const norm = normalizeStore(store)
+    setItems(prev => prev.map((it, i) => i === index ? { ...it, store: norm || undefined } : it))
+    if (norm) {
+      setFavorites(prev => ({ ...prev, [text]: norm }))
     }
     setEditingStoreIndex(null)
     setEditingNewStoreValue('')
