@@ -169,8 +169,8 @@ export default function TodoPage() {
     const { active, over } = event
     if (!over || active.id === over.id) return
     setTodos(prev => {
-      const oldIndex = prev.findIndex(t => t.text === active.id)
-      const newIndex = prev.findIndex(t => t.text === over.id)
+      const oldIndex = prev.findIndex(t => t.text === String(active.id))
+      const newIndex = prev.findIndex(t => t.text === String(over.id))
       return arrayMove(prev, oldIndex, newIndex)
     })
   }
@@ -321,67 +321,24 @@ export default function TodoPage() {
 
       {/* LIST */}
 
-      <div className="flex flex-col gap-4">
-
-        {todos.map((todo, index) => (
-
-          <div
-            key={index}
-            className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
-            ${
-              todo.checked
-                ? 'opacity-40 scale-[0.98]'
-                : ''
-            }`}
-          >
-
-            <button
-              onClick={() => toggleTodo(index)}
-              className="flex items-center gap-3 md:gap-6 flex-1 text-left"
-            >
-
-              <div
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                ${
-                  todo.checked
-                    ? 'bg-green-500 border-green-400'
-                    : 'border-white/30'
-                }`}
-              >
-
-                {todo.checked && <Check size={14} />}
-
-              </div>
-
-              <span
-                className={`text-lg md:text-2xl
-                ${
-                  todo.checked
-                    ? 'line-through text-zinc-500'
-                    : ''
-                }`}
-              >
-
-                {todo.text}
-
-              </span>
-
-            </button>
-
-            <button
-              onClick={() => deleteTodo(index)}
-              className="text-red-400 hover:text-red-300 text-lg"
-            >
-
-              Supprimer
-
-            </button>
-
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={todos.map(t => t.text)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-col gap-4">
+            {todos.map((todo, index) => (
+              <SortableTodoItem
+                key={todo.text}
+                todo={todo}
+                index={index}
+                onToggle={() => toggleTodo(index)}
+                onDelete={() => deleteTodo(index)}
+              />
+            ))}
           </div>
-
-        ))}
-
-      </div>
+        </SortableContext>
+      </DndContext>
 
     </main>
   )
