@@ -2,11 +2,100 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Share2, Check } from 'lucide-react'
+import { Share2, Check, GripVertical } from 'lucide-react'
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 type Todo = {
   text: string
   checked: boolean
+}
+
+function SortableTodoItem({
+  todo,
+  index,
+  onToggle,
+  onDelete,
+}: {
+  todo: Todo
+  index: number
+  onToggle: () => void
+  onDelete: () => void
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: String(index), disabled: todo.checked })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
+        ${todo.checked ? 'opacity-40 scale-[0.98]' : ''}`}
+    >
+      {!todo.checked && (
+        <button
+          {...attributes}
+          {...listeners}
+          className="mr-3 md:mr-4 text-zinc-500 cursor-grab active:cursor-grabbing touch-none"
+          tabIndex={-1}
+          aria-label="Réordonner"
+        >
+          <GripVertical size={20} />
+        </button>
+      )}
+
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-3 md:gap-6 flex-1 text-left"
+      >
+        <div
+          className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
+            ${todo.checked ? 'bg-green-500 border-green-400' : 'border-white/30'}`}
+        >
+          {todo.checked && <Check size={14} />}
+        </div>
+
+        <span
+          className={`text-lg md:text-2xl
+            ${todo.checked ? 'line-through text-zinc-500' : ''}`}
+        >
+          {todo.text}
+        </span>
+      </button>
+
+      <button
+        onClick={onDelete}
+        className="text-red-400 hover:text-red-300 text-lg"
+      >
+        Supprimer
+      </button>
+    </div>
+  )
 }
 
 export default function TodoPage() {
