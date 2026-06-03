@@ -53,13 +53,15 @@ function SortableTodoItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between transition-all
+      className={`glass-card rounded-3xl p-4 md:p-6 flex items-center justify-between
         ${todo.checked ? 'scale-[0.98]' : ''}`}
     >
       <button
         {...(todo.checked ? {} : { ...attributes, ...listeners })}
+        type="button"
         className={`mr-3 md:mr-4 text-zinc-500 cursor-grab active:cursor-grabbing touch-none ${todo.checked ? 'invisible' : ''}`}
         aria-label="Réordonner"
+        aria-hidden={todo.checked}
       >
         <GripVertical size={20} />
       </button>
@@ -126,13 +128,14 @@ export default function TodoPage() {
           if (saved) {
             try {
               const parsed = JSON.parse(saved)
+              const withIds = parsed.map((t: Todo) => ({ ...t, id: t.id || crypto.randomUUID() }))
               const migrateResponse = await fetch('/api/data/todos', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(parsed),
+                body: JSON.stringify(withIds),
               })
               if (!migrateResponse.ok) throw new Error('Migration PUT failed')
-              setTodos(parsed.map((t: Todo) => ({ ...t, id: t.id || crypto.randomUUID() })))
+              setTodos(withIds)
               localStorage.removeItem('myhome-todos')
             } catch {
               // migration failed, continue with empty list
@@ -170,6 +173,7 @@ export default function TodoPage() {
     setTodos(prev => {
       const oldIndex = prev.findIndex(t => t.id === String(active.id))
       const newIndex = prev.findIndex(t => t.id === String(over.id))
+      if (oldIndex === -1 || newIndex === -1) return prev
       return arrayMove(prev, oldIndex, newIndex)
     })
   }
@@ -197,25 +201,14 @@ export default function TodoPage() {
 
   // TOGGLE
 
-  const toggleTodo = (index: number) => {
-
-    const updated = [...todos]
-
-    updated[index].checked =
-      !updated[index].checked
-
-    setTodos(updated)
+  const toggleTodo = (id: string) => {
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, checked: !t.checked } : t))
   }
 
   // DELETE
 
-  const deleteTodo = (index: number) => {
-
-    const updated = todos.filter(
-      (_, i) => i !== index
-    )
-
-    setTodos(updated)
+  const deleteTodo = (id: string) => {
+    setTodos(prev => prev.filter(t => t.id !== id))
   }
 
   // SHARE
@@ -327,12 +320,12 @@ export default function TodoPage() {
           strategy={verticalListSortingStrategy}
         >
           <div className="flex flex-col gap-4">
-            {todos.map((todo, index) => (
+            {todos.map((todo) => (
               <SortableTodoItem
                 key={todo.id}
                 todo={todo}
-                onToggle={() => toggleTodo(index)}
-                onDelete={() => deleteTodo(index)}
+                onToggle={() => toggleTodo(todo.id)}
+                onDelete={() => deleteTodo(todo.id)}
               />
             ))}
           </div>
