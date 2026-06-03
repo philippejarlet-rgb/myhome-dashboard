@@ -216,9 +216,9 @@ export default function CoursesPage() {
               }
             }}
           >
-            <option value="">— Sans magasin</option>
-            {knownStores.map(s => <option key={s} value={s}>{s}</option>)}
-            <option value="__new__">＋ Nouveau magasin...</option>
+            <option value="" className="text-black">— Sans magasin</option>
+            {knownStores.map(s => <option key={s} value={s} className="text-black">{s}</option>)}
+            <option value="__new__" className="text-black">＋ Nouveau magasin...</option>
           </select>
           <button
             onClick={() => { setEditingStoreIndex(null); setEditingNewStoreValue('') }}
@@ -367,9 +367,9 @@ export default function CoursesPage() {
               }}
               className="bg-black/20 rounded-2xl px-4 py-3 outline-none text-base text-zinc-300"
             >
-              <option value="">Magasin (optionnel)</option>
-              {knownStores.map(s => <option key={s} value={s}>{s}</option>)}
-              <option value="__new__">＋ Nouveau magasin...</option>
+              <option value="" className="text-black">Magasin (optionnel)</option>
+              {knownStores.map(s => <option key={s} value={s} className="text-black">{s}</option>)}
+              <option value="__new__" className="text-black">＋ Nouveau magasin...</option>
             </select>
           )}
 
