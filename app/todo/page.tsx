@@ -20,18 +20,17 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 
 type Todo = {
+  id: string
   text: string
   checked: boolean
 }
 
 function SortableTodoItem({
   todo,
-  index,
   onToggle,
   onDelete,
 }: {
   todo: Todo
-  index: number
   onToggle: () => void
   onDelete: () => void
 }) {
@@ -42,7 +41,7 @@ function SortableTodoItem({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: todo.text, disabled: todo.checked })
+  } = useSortable({ id: todo.id, disabled: todo.checked })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -133,7 +132,7 @@ export default function TodoPage() {
                 body: JSON.stringify(parsed),
               })
               if (!migrateResponse.ok) throw new Error('Migration PUT failed')
-              setTodos(parsed)
+              setTodos(parsed.map((t: Todo) => ({ ...t, id: t.id || crypto.randomUUID() })))
               localStorage.removeItem('myhome-todos')
             } catch {
               // migration failed, continue with empty list
@@ -143,7 +142,7 @@ export default function TodoPage() {
           }
         }
 
-        setTodos(data)
+        setTodos(data.map((t: Todo) => ({ ...t, id: t.id || crypto.randomUUID() })))
         setLoaded(true)
       } catch {
         setLoaded(true)
@@ -169,8 +168,8 @@ export default function TodoPage() {
     const { active, over } = event
     if (!over || active.id === over.id) return
     setTodos(prev => {
-      const oldIndex = prev.findIndex(t => t.text === String(active.id))
-      const newIndex = prev.findIndex(t => t.text === String(over.id))
+      const oldIndex = prev.findIndex(t => t.id === String(active.id))
+      const newIndex = prev.findIndex(t => t.id === String(over.id))
       return arrayMove(prev, oldIndex, newIndex)
     })
   }
@@ -186,6 +185,7 @@ export default function TodoPage() {
       ...todos,
 
       {
+        id: crypto.randomUUID(),
         text: newTodo,
         checked: false,
       },
@@ -323,15 +323,14 @@ export default function TodoPage() {
 
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={todos.map(t => t.text)}
+          items={todos.map(t => t.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className="flex flex-col gap-4">
             {todos.map((todo, index) => (
               <SortableTodoItem
-                key={todo.text}
+                key={todo.id}
                 todo={todo}
-                index={index}
                 onToggle={() => toggleTodo(index)}
                 onDelete={() => deleteTodo(index)}
               />
