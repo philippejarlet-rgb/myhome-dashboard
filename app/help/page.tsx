@@ -59,7 +59,7 @@ const sections = [
       "→ Ajouter une radio : depuis la page Radios, renseignez le nom, l'URL du stream audio et optionnellement un logo, puis validez.",
       '→ Mettre en favori : tapez sur l\'étoile (★) d\'une radio pour la faire remonter en tête de liste.',
       '→ Supprimer une radio : tapez sur la corbeille à droite de la radio.',
-      "→ La radio continue de jouer si vous changez de page — le son ne s'arrête pas à la navigation.",
+      "→ Note : la radio s'arrête si vous changez de page dans MyHome. Revenez sur la page Radios pour reprendre la lecture.",
     ],
   },
 ]
