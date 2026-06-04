@@ -79,7 +79,7 @@ export default function HelpPage() {
         <h1 className="text-3xl md:text-5xl font-thin tracking-wide">Aide</h1>
       </div>
 
-      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         {sections.map((section) => (
           <div
             key={section.title}
