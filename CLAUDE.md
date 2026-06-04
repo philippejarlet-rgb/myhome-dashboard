@@ -116,6 +116,38 @@ La refonte responsive est **terminée** (Phase 1 home + Phase 2 sous-pages). La 
 5. **Jamais** modifier `.env.local` ou les migrations Supabase sans confirmation
 6. Si une erreur précédente revient → la signaler, ne pas la refaire silencieusement
 
+## ⚠️ Grille home (`/`) — hauteurs fixes et ascenseurs
+
+La page home utilise une grille CSS à hauteurs fixes sur desktop (`md:`). **Ne jamais toucher un wrapper de widget sans vérifier la cohérence des hauteurs.**
+
+### Hauteurs en vigueur (à maintenir)
+| Widget | Hauteur wrapper |
+|--------|----------------|
+| Clock | `md:h-[160px]` |
+| Recettes du monde | `md:h-[160px]` |
+| Todo | `md:h-[140px]` |
+| Courses | `md:h-[140px]` |
+| Météo | `md:h-[316px]` (= 160 + 16gap + 140) |
+
+### Règles
+- **Hauteur explicite (`md:h-[...]`)** sur tous les wrappers, jamais `max-h` — sinon `h-full` interne ne se résout pas.
+- **`md:overflow-hidden`** obligatoire sur tous les wrappers à hauteur fixe.
+- **Si on change une hauteur de rangée**, répercuter sur Météo : `md:h-[row1 + 16 + row2]`.
+- Sur mobile (sans préfixe), aucune hauteur fixe — les widgets s'empilent librement.
+
+### Ascenseur dans les widgets
+Les widgets `TodoWidget` et `CoursesWidget` gèrent leur propre scroll en interne :
+```
+// structure interne des widgets à liste
+<div class="h-full flex flex-col overflow-hidden">   ← wrapper widget
+  <h2 class="shrink-0">Titre</h2>
+  <div class="flex-1 min-h-0 overflow-y-auto">       ← zone scrollable
+    <ul>...</ul>
+  </div>
+</div>
+```
+**Ne pas déplacer la logique de scroll vers le wrapper page.tsx** — elle appartient au composant widget.
+
 ## Anti-patterns à éviter
 
 - Ne pas générer 50 fichiers d'un coup — je valide étape par étape
