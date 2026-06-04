@@ -95,7 +95,7 @@ export default function Screensaver({ onWake }: Props) {
 
   return (
     <div
-      onClick={onWake}
+      onPointerDown={(e) => { e.preventDefault(); onWake() }}
       className="fixed inset-0 overflow-hidden cursor-pointer z-[999]"
     >
       {/* Background image ou fond noir si aucune photo */}
