@@ -121,19 +121,19 @@ La refonte responsive est **terminée** (Phase 1 home + Phase 2 sous-pages). La 
 La page home utilise une grille CSS à hauteurs fixes sur desktop (`md:`). **Ne jamais toucher un wrapper de widget sans vérifier la cohérence des hauteurs.**
 
 ### Hauteurs en vigueur (à maintenir)
-| Widget | Hauteur wrapper |
-|--------|----------------|
-| Clock | `md:h-[160px]` |
-| Recettes du monde | `md:h-[160px]` |
-| Todo | `md:h-[140px]` |
-| Courses | `md:h-[140px]` |
-| Météo | `md:h-[316px]` (= 160 + 16gap + 140) |
+| Widget | Mobile (< 768px) | Desktop (`md:`) |
+|--------|-----------------|-----------------|
+| Clock | — (masqué) | `md:h-[160px]` |
+| Recettes du monde | `h-[160px]` | `md:h-[160px]` |
+| Todo | `h-[160px]` | `md:h-[140px]` |
+| Courses | `h-[160px]` | `md:h-[140px]` |
+| Météo | — (hauteur libre) | `md:h-[316px]` (= 160 + 16gap + 140) |
 
 ### Règles
-- **Hauteur explicite (`md:h-[...]`)** sur tous les wrappers, jamais `max-h` — sinon `h-full` interne ne se résout pas.
-- **`md:overflow-hidden`** obligatoire sur tous les wrappers à hauteur fixe.
-- **Si on change une hauteur de rangée**, répercuter sur Météo : `md:h-[row1 + 16 + row2]`.
-- Sur mobile (sans préfixe), aucune hauteur fixe — les widgets s'empilent librement.
+- **Hauteur explicite (`h-[...]`)** sur tous les wrappers à contenu variable, jamais `max-h` — sinon `h-full` interne ne se résout pas.
+- **`overflow-hidden`** obligatoire sur tous les wrappers à hauteur fixe (mobile ET desktop).
+- **Si on change une hauteur de rangée desktop**, répercuter sur Météo : `md:h-[row1 + 16 + row2]`.
+- **Sur mobile**, les widgets à liste (Todo, Courses, Recettes) doivent avoir une hauteur fixe pour éviter qu'une longue liste empêche d'atteindre les Radios.
 
 ### Ascenseur dans les widgets
 Les widgets `TodoWidget` et `CoursesWidget` gèrent leur propre scroll en interne :
