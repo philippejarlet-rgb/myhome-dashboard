@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   RefreshCw, CloudSun, ListTodo, ShoppingCart, Music2,
-  Globe, Newspaper, Camera, Maximize2, Minimize2, LogOut
+  Globe, Newspaper, Camera, Maximize2, Minimize2, LogOut, HelpCircle
 } from 'lucide-react'
 
 export default function BottomBar() {
@@ -36,6 +36,7 @@ export default function BottomBar() {
     { icon: null, label: 'Recettes-Monde', href: null },
     { icon: <Newspaper size={26} />, label: 'News', href: '/news' },
     { icon: <Camera size={26} />, label: 'Photos', href: '/photos' },
+    { icon: <HelpCircle size={26} />, label: 'Aide', href: '/help' },
   ]
 
   const [recetteLoading, setRecetteLoading] = useState(false)
