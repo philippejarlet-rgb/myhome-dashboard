@@ -130,7 +130,7 @@ export default function RadioWidget() {
       </div>
 
       {/* Volume slider — Option C */}
-      <div className="flex items-center gap-3 mt-6 opacity-60 active:opacity-100 transition-opacity">
+      <div className="hidden md:flex items-center gap-3 mt-6 opacity-60 active:opacity-100 transition-opacity">
         <Volume1 size={18} />
         <input
           type="range"

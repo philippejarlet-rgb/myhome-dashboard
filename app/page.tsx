@@ -105,6 +105,11 @@ export default function Home() {
           <RadioWidget />
         </div>
 
+        {/* Footer — mobile uniquement */}
+        <div className="md:hidden order-7 col-span-1 text-center text-xs text-zinc-500 py-4 pb-20">
+          © {new Date().getFullYear()} MyHome
+        </div>
+
       </div>
 
       <BottomBar />
