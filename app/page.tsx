@@ -28,29 +28,28 @@ export default function Home() {
     let timeout: NodeJS.Timeout
 
     const resetTimer = () => {
-
       clearTimeout(timeout)
-
       setScreensaver(false)
+      timeout = setTimeout(() => setScreensaver(true), 60000)
+    }
 
-      timeout = setTimeout(() => {
-        setScreensaver(true)
-      }, 60000)
-
+    // pointerdown réinitialise le timer mais ne retire PAS le screensaver :
+    // le screensaver gère lui-même son réveil pour éviter le ghost click touch
+    const resetTimerOnly = () => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => setScreensaver(true), 60000)
     }
 
     window.addEventListener('mousemove', resetTimer)
-    window.addEventListener('pointerdown', resetTimer)
     window.addEventListener('keydown', resetTimer)
+    window.addEventListener('pointerdown', resetTimerOnly)
 
     resetTimer()
 
     return () => {
-
       window.removeEventListener('mousemove', resetTimer)
-      window.removeEventListener('pointerdown', resetTimer)
       window.removeEventListener('keydown', resetTimer)
-
+      window.removeEventListener('pointerdown', resetTimerOnly)
     }
 
   }, [])

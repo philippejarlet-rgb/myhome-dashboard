@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   onWake: () => void
@@ -32,6 +32,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function Screensaver({ onWake }: Props) {
+  const divRef = useRef<HTMLDivElement>(null)
   const [images, setImages] = useState<string[]>([])
   const [currentImage, setCurrentImage] = useState(0)
   const [time, setTime] = useState(() =>
@@ -66,6 +67,18 @@ export default function Screensaver({ onWake }: Props) {
     return () => clearInterval(interval)
   }, [])
 
+  // Réveil au touch sans ghost click — passive:false requis pour preventDefault()
+  useEffect(() => {
+    const el = divRef.current
+    if (!el) return
+    const handler = (e: PointerEvent) => {
+      e.preventDefault()
+      setTimeout(onWake, 300)
+    }
+    el.addEventListener('pointerdown', handler, { passive: false })
+    return () => el.removeEventListener('pointerdown', handler)
+  }, [onWake])
+
   // Météo
   useEffect(() => {
     async function fetchWeather() {
@@ -95,7 +108,7 @@ export default function Screensaver({ onWake }: Props) {
 
   return (
     <div
-      onPointerDown={(e) => { e.preventDefault(); onWake() }}
+      ref={divRef}
       className="fixed inset-0 overflow-hidden cursor-pointer z-[999]"
     >
       {/* Background image ou fond noir si aucune photo */}
