@@ -11,21 +11,7 @@ import {
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
-  const [recetteLoading, setRecetteLoading] = useState(false)
   const router = useRouter()
-
-  const handleRecetteMonde = async () => {
-    if (recetteLoading) return
-    setRecetteLoading(true)
-    try {
-      const res = await fetch('/api/cuisine/random')
-      if (!res.ok) return
-      const recipe = await res.json()
-      if (recipe?.url) window.open(recipe.url, '_blank', 'noopener,noreferrer')
-    } finally {
-      setRecetteLoading(false)
-    }
-  }
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -104,18 +90,17 @@ export default function MobileMenu() {
           </Link>
           <Link href="/cuisine" onClick={() => setOpen(false)} className={linkClass}>
             <Globe size={22} />
-            <span>Atlas Culinaire</span>
+            <span>Recettes du Monde</span>
           </Link>
-          <button onClick={handleRecetteMonde} className={linkClass}>
+          <button onClick={() => { window.open('https://atlasculinaire.com', '_blank', 'noopener,noreferrer'); setOpen(false) }} className={linkClass}>
             <Image
               src="https://atlasculinaire.com/favicon.ico"
-              alt="Recettes du Monde"
+              alt="Atlas Culinaire"
               width={22}
               height={22}
-              className={recetteLoading ? 'opacity-50 animate-pulse' : ''}
               unoptimized
             />
-            <span>Recettes du Monde</span>
+            <span>Atlas Culinaire</span>
           </button>
           <Link href="/photos" onClick={() => setOpen(false)} className={linkClass}>
             <Camera size={22} />

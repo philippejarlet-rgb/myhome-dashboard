@@ -32,26 +32,12 @@ export default function BottomBar() {
     { icon: <ListTodo size={26} />, label: 'Todo', href: '/todo' },
     { icon: <ShoppingCart size={26} />, label: 'Courses', href: '/courses' },
     { icon: <Music2 size={26} />, label: 'Radios', href: '/radios' },
-    { icon: null, label: 'Atlas-Culinaire', href: '/cuisine' },
-    { icon: null, label: 'Recettes-Monde', href: null },
+    { icon: null, label: 'Recettes-Monde', href: '/cuisine' },
+    { icon: null, label: 'Atlas-Culinaire', href: null },
     { icon: <Newspaper size={26} />, label: 'News', href: '/news' },
     { icon: <Camera size={26} />, label: 'Photos', href: '/photos' },
     { icon: <HelpCircle size={26} />, label: 'Aide', href: '/help' },
   ]
-
-  const [recetteLoading, setRecetteLoading] = useState(false)
-
-  const handleRecetteMonde = async () => {
-    if (recetteLoading) return
-    setRecetteLoading(true)
-    try {
-      const res = await fetch('/api/cuisine/random')
-      const recipe = await res.json()
-      if (recipe?.url) window.open(recipe.url, '_blank', 'noopener,noreferrer')
-    } finally {
-      setRecetteLoading(false)
-    }
-  }
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -70,26 +56,25 @@ export default function BottomBar() {
         </button>
 
         {items.map((item) => {
-          if (item.label === 'Recettes-Monde') {
+          if (item.label === 'Atlas-Culinaire') {
             return (
-              <button key={item.label} onClick={handleRecetteMonde} className={btnClass} title="Recette surprise du monde">
+              <button key={item.label} onClick={() => window.open('https://atlasculinaire.com', '_blank', 'noopener,noreferrer')} className={btnClass}>
                 <Image
                   src="https://atlasculinaire.com/favicon.ico"
                   alt="Atlas Culinaire"
                   width={26}
                   height={26}
-                  className={recetteLoading ? 'opacity-50 animate-pulse' : ''}
                   unoptimized
                 />
-                <span>Recettes-Monde</span>
+                <span>Atlas-Culinaire</span>
               </button>
             )
           }
-          if (item.label === 'Atlas-Culinaire') {
+          if (item.label === 'Recettes-Monde') {
             return (
               <Link key={item.label} href="/cuisine" className={btnClass}>
                 <Globe size={26} />
-                <span>Atlas-Culinaire</span>
+                <span>Recettes-Monde</span>
               </Link>
             )
           }
