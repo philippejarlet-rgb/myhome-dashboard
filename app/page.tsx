@@ -81,7 +81,7 @@ export default function Home() {
         </div>
 
         {/* Weather — mobile: 2e, desktop: col 4-8 rows 1-2 */}
-        <div className="order-2 md:order-none md:col-span-5 md:row-span-2 md:h-[300px]">
+        <div className="order-2 md:order-none md:col-span-5 md:row-span-2 md:h-[316px]">
           <WeatherWidget />
         </div>
 
@@ -91,12 +91,12 @@ export default function Home() {
         </div>
 
         {/* Todo — mobile: 3e, desktop: col 1-3 row 2 */}
-        <div className="order-3 md:order-none md:col-span-3 md:col-start-1 md:max-h-[140px] md:overflow-hidden">
+        <div className="order-3 md:order-none md:col-span-3 md:col-start-1 md:h-[140px] md:overflow-hidden">
           <TodoWidget />
         </div>
 
         {/* Courses — mobile: 4e, desktop: col 9-12 row 2 */}
-        <div className="order-4 md:order-none md:col-span-4 md:col-start-9">
+        <div className="order-4 md:order-none md:col-span-4 md:col-start-9 md:h-[140px] md:overflow-hidden">
           <CoursesWidget />
         </div>
 
