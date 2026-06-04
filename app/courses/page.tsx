@@ -304,8 +304,8 @@ export default function CoursesPage() {
         </button>
 
         <div>
-          <h1 className="text-3xl md:text-6xl font-thin">Courses</h1>
-          <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">Liste intelligente MYHOME</p>
+          <h1 className="text-3xl md:text-6xl font-thin">Vos Courses</h1>
+          <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">Liste intelligente</p>
         </div>
 
         <button
@@ -428,13 +428,17 @@ export default function CoursesPage() {
 
         {storesInItems.map(store => (
           <div key={store}>
-            <p className="text-zinc-400 text-sm tracking-widest uppercase mb-3">── {store} ──</p>
+            <p className="text-white text-base md:text-lg tracking-widest uppercase mb-3">── {store} ──</p>
             <div className="flex flex-col gap-4">
               {itemsByStore(store).map(({ item, index }) => renderItem(item, index))}
             </div>
           </div>
         ))}
 
+      </div>
+
+      <div className="md:hidden text-center text-xs text-zinc-500 py-4 pb-20 mt-8">
+        © {new Date().getFullYear()} MyHome
       </div>
 
     </main>

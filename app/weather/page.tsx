@@ -174,7 +174,7 @@ export default function WeatherPage() {
         <div>
 
           <h1 className="text-3xl md:text-6xl font-thin">
-            Weather
+            Votre Météo
           </h1>
 
           <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
@@ -287,6 +287,10 @@ export default function WeatherPage() {
 
         ))}
 
+      </div>
+
+      <div className="md:hidden text-center text-xs text-zinc-500 py-4 pb-20 mt-8">
+        © {new Date().getFullYear()} MyHome
       </div>
 
     </main>

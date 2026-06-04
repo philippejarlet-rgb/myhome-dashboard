@@ -13,12 +13,16 @@ export default function CuisinePage() {
           ← Retour
         </Link>
         <div>
-          <h1 className="text-3xl md:text-6xl font-thin">Atlas Culinaire</h1>
+          <h1 className="text-3xl md:text-6xl font-thin">Recettes du monde</h1>
           <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">À table le monde</p>
         </div>
       </div>
 
       <CuisineSearch />
+
+      <div className="md:hidden text-center text-xs text-zinc-500 py-4 pb-20 mt-8">
+        © {new Date().getFullYear()} MyHome
+      </div>
 
     </main>
   )

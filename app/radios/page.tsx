@@ -241,7 +241,7 @@ export default function RadiosPage() {
           </h1>
 
           <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">
-            Gestion des radios MYHOME
+            Gestion de vos Radios
           </p>
 
         </div>
@@ -428,6 +428,10 @@ export default function RadiosPage() {
       </div>
 
       <audio ref={audioRef} />
+
+      <div className="md:hidden text-center text-xs text-zinc-500 py-4 pb-20 mt-8">
+        © {new Date().getFullYear()} MyHome
+      </div>
 
     </main>
   )

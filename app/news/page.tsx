@@ -42,10 +42,10 @@ export default function NewsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
 
       {/* HEADER */}
-      <div className="flex items-center gap-6 mb-10">
+      <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">
         <button
           onClick={() => router.push('/')}
           className="glass-card rounded-2xl px-4 py-2 hover:scale-105 transition-all"
@@ -53,8 +53,8 @@ export default function NewsPage() {
           ← Retour
         </button>
         <div>
-          <h1 className="text-5xl font-thin">Sources d&apos;actualité</h1>
-          <p className="text-zinc-400 mt-1">Sélectionne les sources affichées dans le ticker</p>
+          <h1 className="text-3xl md:text-6xl font-thin">Vos News</h1>
+          <p className="text-zinc-400 mt-1 md:mt-2 text-sm md:text-xl">Sélectionnez une ou plusieurs sources d&apos;info</p>
         </div>
       </div>
 
@@ -101,6 +101,10 @@ export default function NewsPage() {
         </button>
         {saved && <span className="text-cyan-400 text-sm">✓ Sauvegardé</span>}
         <span className="text-zinc-500 text-sm">{selected.length} source{selected.length > 1 ? 's' : ''} sélectionnée{selected.length > 1 ? 's' : ''}</span>
+      </div>
+
+      <div className="md:hidden text-center text-xs text-zinc-500 py-4 pb-20 mt-8">
+        © {new Date().getFullYear()} MyHome
       </div>
 
     </main>

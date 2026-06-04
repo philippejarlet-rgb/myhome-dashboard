@@ -48,9 +48,17 @@ const sections = [
     icon: <Globe size={28} className="text-purple-400" />,
     title: 'Recettes du Monde',
     content: [
-      '→ Le bouton "Recettes-Monde" (dans la barre du bas ou le menu) ouvre une recette choisie aléatoirement parmi des cuisines du monde entier.',
-      '→ Chaque tap propose une recette différente — c\'est aléatoire à chaque fois.',
-      '→ La recette s\'ouvre directement sur atlasculinaire.com pour voir tous les détails, ingrédients et étapes.',
+      '→ La page Recettes du Monde est un moteur de recherche de recettes du monde entier.',
+      '→ Tapez un ingrédient ou un plat dans la barre de recherche pour trouver des recettes.',
+      '→ Cliquez sur une recette pour voir ses détails complets.',
+    ],
+  },
+  {
+    icon: <Globe size={28} className="text-amber-400" />,
+    title: 'Atlas Culinaire',
+    content: [
+      '→ Le bouton "Atlas Culinaire" (dans la barre du bas ou le menu) ouvre directement le site atlasculinaire.com.',
+      '→ Vous accédez à l\'intégralité du site avec toutes ses recettes, articles et fonctionnalités.',
     ],
   },
   {
