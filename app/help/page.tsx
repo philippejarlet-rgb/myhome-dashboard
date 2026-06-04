@@ -31,6 +31,7 @@ const sections = [
       '→ Ajouter une tâche : tapez dans le champ texte en bas de la liste et validez (bouton + ou touche Entrée).',
       '→ Cocher / décocher : tapez sur la case à gauche de la tâche pour la marquer comme faite.',
       '→ Supprimer une tâche : tapez sur la corbeille à droite de la tâche.',
+      '→ Trier les tâches : maintenez appuyé sur la poignée (≡) à gauche d\'une tâche et faites-la glisser à la position souhaitée.',
     ],
   },
   {
