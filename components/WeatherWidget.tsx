@@ -26,6 +26,9 @@ export default function WeatherWidget() {
 
     fetchWeather()
 
+    const interval = setInterval(fetchWeather, 15 * 60 * 1000)
+    return () => clearInterval(interval)
+
   }, [])
 
   // LOADING

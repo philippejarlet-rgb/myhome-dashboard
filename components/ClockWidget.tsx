@@ -6,13 +6,14 @@ import { getSaintDuJour } from '@/lib/saintsDuJour'
 export default function ClockWidget() {
   const [time, setTime] = useState('')
   const [date, setDate] = useState('')
-  const [saint] = useState(() => getSaintDuJour())
+  const [saint, setSaint] = useState('')
 
   useEffect(() => {
     const tick = () => {
       const now = new Date()
       setTime(now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))
       setDate(now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }))
+      setSaint(getSaintDuJour())
     }
     tick()
     const interval = setInterval(tick, 60000)
