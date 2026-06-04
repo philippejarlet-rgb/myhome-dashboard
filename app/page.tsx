@@ -86,17 +86,17 @@ export default function Home() {
         </div>
 
         {/* Recette du Monde — mobile: 5e, desktop: col 9-12 row 1 */}
-        <div className="order-5 md:order-none md:col-span-4 md:h-[160px]">
+        <div className="order-5 md:order-none md:col-span-4 h-[160px] overflow-hidden md:h-[160px]">
           <RecetteDuMonde />
         </div>
 
         {/* Todo — mobile: 3e, desktop: col 1-3 row 2 */}
-        <div className="order-3 md:order-none md:col-span-3 md:col-start-1 md:h-[140px] md:overflow-hidden">
+        <div className="order-3 md:order-none md:col-span-3 md:col-start-1 h-[160px] overflow-hidden md:h-[140px]">
           <TodoWidget />
         </div>
 
         {/* Courses — mobile: 4e, desktop: col 9-12 row 2 */}
-        <div className="order-4 md:order-none md:col-span-4 md:col-start-9 md:h-[140px] md:overflow-hidden">
+        <div className="order-4 md:order-none md:col-span-4 md:col-start-9 h-[160px] overflow-hidden md:h-[140px]">
           <CoursesWidget />
         </div>
 
