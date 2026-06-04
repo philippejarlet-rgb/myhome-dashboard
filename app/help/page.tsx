@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import {
-  CloudSun, ListTodo, ShoppingCart, Music2, Globe, HelpCircle
+  CloudSun, ListTodo, ShoppingCart, Music2, Globe, HelpCircle, Camera
 } from 'lucide-react'
 
 const sections = [
@@ -51,6 +51,16 @@ const sections = [
       '→ Le bouton "Recettes-Monde" (dans la barre du bas ou le menu) ouvre une recette choisie aléatoirement parmi des cuisines du monde entier.',
       '→ Chaque tap propose une recette différente — c\'est aléatoire à chaque fois.',
       '→ La recette s\'ouvre directement sur atlasculinaire.com pour voir tous les détails, ingrédients et étapes.',
+    ],
+  },
+  {
+    icon: <Camera size={28} className="text-yellow-400" />,
+    title: 'Photos',
+    content: [
+      '→ La page Photos est une galerie personnelle : vous pouvez y uploader vos propres photos et les supprimer.',
+      '→ Uploader une photo : tapez sur le bouton d\'upload, choisissez une image depuis votre appareil.',
+      '→ Supprimer une photo : tapez sur la corbeille affichée sur la photo.',
+      '→ Écran de veille : lorsque le dashboard est inactif, un diaporama démarre automatiquement et affiche vos photos en ordre aléatoire. La radio continue de jouer en fond pendant le diaporama.',
     ],
   },
   {
