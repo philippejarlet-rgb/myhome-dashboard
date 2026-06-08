@@ -312,7 +312,7 @@ export default function RadiosPage() {
 
       {/* RADIOS */}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4 mb-6 md:mb-8">
 
         {radios.map((radio) => (
 
@@ -488,7 +488,7 @@ export default function RadiosPage() {
             )}
 
             {!searching && searchResults.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 overflow-y-auto max-h-[280px]">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3 overflow-y-auto max-h-[280px]">
                 {searchResults.map((result) => (
                   <button
                     key={result.name + result.url_resolved}
