@@ -3,13 +3,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Hls from 'hls.js'
-import { Square, Star, Camera, Check } from 'lucide-react'
+import { Square, Star, Camera, Check, Loader2, Radio as RadioIcon } from 'lucide-react'
 
 type Radio = {
   name: string
   stream: string
   logo: string
   favorite: boolean
+}
+
+type RadioBrowserResult = {
+  name: string
+  url_resolved: string
+  favicon: string
+  country: string
 }
 
 export default function RadiosPage() {
@@ -30,6 +37,13 @@ export default function RadiosPage() {
   const [editingName, setEditingName] = useState<string | null>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
+
+  const [tab, setTab] = useState<'search' | 'manual'>('search')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<RadioBrowserResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [searchError, setSearchError] = useState(false)
+  const [justAdded, setJustAdded] = useState<string | null>(null)
 
   // LOAD
 
@@ -105,6 +119,34 @@ export default function RadiosPage() {
     }
   }, [])
 
+  // SEARCH
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([])
+      setSearchError(false)
+      return
+    }
+    const timer = setTimeout(async () => {
+      setSearching(true)
+      setSearchError(false)
+      try {
+        const res = await fetch(
+          `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(searchQuery)}&limit=20&hidebroken=true&order=clickcount&reverse=true`
+        )
+        if (!res.ok) throw new Error('API error')
+        const data: RadioBrowserResult[] = await res.json()
+        setSearchResults(data)
+      } catch {
+        setSearchError(true)
+        setSearchResults([])
+      } finally {
+        setSearching(false)
+      }
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
   // PLAY
 
   const playStream = (audio: HTMLAudioElement, url: string) => {
@@ -175,7 +217,27 @@ export default function RadiosPage() {
     setNewName(radio.name)
     setNewStream(radio.stream)
     setNewLogo(radio.logo)
+    setTab('manual')
     formRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const addFromSearch = (result: RadioBrowserResult) => {
+    if (radios.some((r) => r.name === result.name)) return
+    const newRadio: Radio = {
+      name: result.name,
+      stream: result.url_resolved,
+      logo: result.favicon || '',
+      favorite: false,
+    }
+    const updated = [...radios, newRadio]
+    setRadios(updated)
+    setJustAdded(result.name)
+    setTimeout(() => setJustAdded(null), 1000)
+    fetch('/api/data/radios', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    }).catch(() => {})
   }
 
   const cancelEdit = () => {
@@ -366,64 +428,163 @@ export default function RadiosPage() {
 
       <div ref={formRef} className="glass-card rounded-3xl p-4 md:p-6">
 
-        <h2 className="text-2xl mb-6">
-          {editingName !== null ? `Modifier — ${editingName}` : 'Ajouter une radio'}
-        </h2>
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setTab('search')}
+            className={`px-4 py-2 rounded-xl text-sm transition-all ${
+              tab === 'search'
+                ? 'bg-cyan-500/20 border border-cyan-500/50 text-cyan-300'
+                : 'bg-black/20 text-zinc-400'
+            }`}
+          >
+            Recherche
+          </button>
+          <button
+            onClick={() => setTab('manual')}
+            className={`px-4 py-2 rounded-xl text-sm transition-all ${
+              tab === 'manual'
+                ? 'bg-cyan-500/20 border border-cyan-500/50 text-cyan-300'
+                : 'bg-black/20 text-zinc-400'
+            }`}
+          >
+            Saisie manuelle
+          </button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-
-          <input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            placeholder="Nom"
-            className="bg-black/20 rounded-xl px-4 py-3 outline-none"
-          />
-
-          <input
-            value={newStream}
-            onChange={(e) => setNewStream(e.target.value)}
-            placeholder="Flux URL"
-            className="bg-black/20 rounded-xl px-4 py-3 outline-none"
-          />
-
-          <div className="flex items-center gap-3">
+        {tab === 'search' && (
+          <div>
             <input
-              ref={logoInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleLogoUpload}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setSearchError(false)
+              }}
+              placeholder="Rechercher une radio (ex: jazz, couleur, RTL...)"
+              className="w-full bg-black/20 rounded-xl px-4 py-3 outline-none mb-4"
             />
-            <button
-              onClick={() => logoInputRef.current?.click()}
-              disabled={uploadingLogo}
-              className="bg-black/20 rounded-xl px-4 py-3 flex-1 text-left disabled:opacity-50"
-            >
-              {uploadingLogo ? 'Upload...' : newLogo ? <><Check size={14} className="inline mr-1" />Logo uploadé</> : <><Camera size={14} className="inline mr-1" />Choisir un logo</>}
-            </button>
-            {newLogo && (
-              <img src={newLogo} className="h-10 w-10 object-contain rounded-lg" />
+
+            {searching && (
+              <div className="flex justify-center py-8">
+                <Loader2 className="animate-spin text-cyan-400" size={28} />
+              </div>
+            )}
+
+            {searchError && !searching && (
+              <p className="text-zinc-400 text-sm py-4">
+                Recherche indisponible, utilisez la saisie manuelle.
+              </p>
+            )}
+
+            {!searching && !searchError && searchQuery.trim() && searchResults.length === 0 && (
+              <p className="text-zinc-400 text-sm py-4">
+                Aucune station trouvée pour « {searchQuery} »
+              </p>
+            )}
+
+            {!searching && !searchError && !searchQuery.trim() && (
+              <p className="text-zinc-500 text-sm py-4">
+                Tapez le nom d&apos;une radio pour commencer la recherche.
+              </p>
+            )}
+
+            {!searching && searchResults.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 overflow-y-auto max-h-[280px]">
+                {searchResults.map((result) => (
+                  <button
+                    key={result.name + result.url_resolved}
+                    onClick={() => addFromSearch(result)}
+                    disabled={radios.some((r) => r.name === result.name)}
+                    className={`rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition-all ${
+                      justAdded === result.name
+                        ? 'bg-green-500/30 border border-green-400'
+                        : radios.some((r) => r.name === result.name)
+                        ? 'bg-white/5 opacity-40 cursor-not-allowed'
+                        : 'bg-white/10 hover:bg-white/20'
+                    }`}
+                  >
+                    {result.favicon ? (
+                      <img
+                        src={result.favicon}
+                        className="h-12 object-contain rounded-xl"
+                        onError={(e) => {
+                          ;(e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <RadioIcon size={32} className="text-cyan-400" />
+                    )}
+                    <span className="text-sm text-center line-clamp-2">{result.name}</span>
+                    {result.country && (
+                      <span className="text-xs text-zinc-400">{result.country}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
+        )}
 
-        </div>
+        {tab === 'manual' && (
+          <div>
+            {editingName !== null && (
+              <p className="text-zinc-400 text-sm mb-4">Modification de : {editingName}</p>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
 
-        <div className="flex gap-3 mt-4">
-          <button
-            onClick={saveRadio}
-            className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-6 py-3"
-          >
-            {editingName !== null ? 'Enregistrer' : 'Ajouter'}
-          </button>
-          {editingName !== null && (
-            <button
-              onClick={cancelEdit}
-              className="bg-white/10 hover:bg-white/20 transition-all rounded-2xl px-6 py-3"
-            >
-              Annuler
-            </button>
-          )}
-        </div>
+              <input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Nom"
+                className="bg-black/20 rounded-xl px-4 py-3 outline-none"
+              />
+
+              <input
+                value={newStream}
+                onChange={(e) => setNewStream(e.target.value)}
+                placeholder="Flux URL"
+                className="bg-black/20 rounded-xl px-4 py-3 outline-none"
+              />
+
+              <div className="flex items-center gap-3">
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                />
+                <button
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="bg-black/20 rounded-xl px-4 py-3 flex-1 text-left disabled:opacity-50"
+                >
+                  {uploadingLogo ? 'Upload...' : newLogo ? <><Check size={14} className="inline mr-1" />Logo uploadé</> : <><Camera size={14} className="inline mr-1" />Choisir un logo</>}
+                </button>
+                {newLogo && (
+                  <img src={newLogo} className="h-10 w-10 object-contain rounded-lg" />
+                )}
+              </div>
+
+            </div>
+
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={saveRadio}
+                className="bg-cyan-500 hover:bg-cyan-400 transition-all rounded-2xl px-6 py-3"
+              >
+                {editingName !== null ? 'Enregistrer' : 'Ajouter'}
+              </button>
+              {editingName !== null && (
+                <button
+                  onClick={cancelEdit}
+                  className="bg-white/10 hover:bg-white/20 transition-all rounded-2xl px-6 py-3"
+                >
+                  Annuler
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
       </div>
 
