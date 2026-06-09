@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   RefreshCw, CloudSun, ListTodo, ShoppingCart, Music2,
-  Globe, Newspaper, Camera, Maximize2, Minimize2, LogOut, HelpCircle
+  Wine, Globe, Newspaper, Camera, Maximize2, Minimize2, LogOut, HelpCircle
 } from 'lucide-react'
 
 export default function BottomBar() {
@@ -32,6 +32,7 @@ export default function BottomBar() {
     { icon: <ListTodo size={26} />, label: 'Todo', href: '/todo' },
     { icon: <ShoppingCart size={26} />, label: 'Courses', href: '/courses' },
     { icon: <Music2 size={26} />, label: 'Radios', href: '/radios' },
+    { icon: <Wine size={26} />, label: 'Bar', href: '/bar' },
     { icon: null, label: 'Recettes-Monde', href: '/cuisine' },
     { icon: null, label: 'Atlas-Culinaire', href: null },
     { icon: <Newspaper size={26} />, label: 'News', href: '/news' },
