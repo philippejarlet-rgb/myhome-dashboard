@@ -64,6 +64,7 @@ La refonte responsive est **terminée** (Phase 1 home + Phase 2 sous-pages). La 
 - `/radios` — grille 2→4 cols, formulaire 1→3 cols, logo réduit mobile, bouton Stop aligné
 - `/cuisine` — header + barre de recherche empilée (input + select en colonne sur mobile)
 - `/photos` — header empilé, grille 2→3 cols, cards `h-36` mobile, bouton upload pleine largeur
+- `/bar` — header + widget 3 onglets, fond géré par le système de backgrounds admin
 
 **Règles :**
 - Mobile-first n'est PAS le mode par défaut ici — mais le code l'est (`md:` = surcharge tablette)
@@ -88,8 +89,9 @@ La refonte responsive est **terminée** (Phase 1 home + Phase 2 sous-pages). La 
 
 - Variables sensibles dans `.env.local` (jamais commité)
 - `SUPABASE_SERVICE_ROLE_KEY` **uniquement** dans les API routes serveur, jamais côté client
+- `ANTHROPIC_API_KEY` **uniquement** dans les API routes serveur (utilisé par `/api/cocktails`), jamais côté client
 - `NEXT_PUBLIC_*` pour ce qui est exposable au navigateur
-- Ne **jamais** logger une clé Supabase, même temporairement
+- Ne **jamais** logger une clé Supabase ou Anthropic, même temporairement
 
 ## Modules
 
