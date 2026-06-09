@@ -157,6 +157,7 @@ Les widgets `TodoWidget` et `CoursesWidget` gèrent leur propre scroll en intern
 - Pas de refactoring spontané "tant qu'on y est" — me demander
 - Pas de Tailwind v3-isms (cf. section dédiée)
 - Pas de hover-only — tablette tactile
+- **Ne jamais proposer de maquette HTML** — l'utilisateur ne veut pas de maquettes
 
 ## État d'avancement
 

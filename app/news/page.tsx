@@ -12,6 +12,16 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [bgImage, setBgImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/backgrounds')
+      .then((r) => r.json())
+      .then((data: { selection?: Record<string, string | null> }) => {
+        setBgImage(data.selection?.news ?? null)
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     fetch('/api/data/news_sources')
@@ -42,7 +52,12 @@ export default function NewsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
+    <main
+      className="min-h-screen text-white p-4 md:p-8 relative"
+      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+    >
+      {!bgImage && <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />}
+      {bgImage && <div className="absolute inset-0 bg-black/55 -z-10" />}
 
       {/* HEADER */}
       <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">

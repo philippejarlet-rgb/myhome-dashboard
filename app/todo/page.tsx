@@ -105,6 +105,17 @@ export default function TodoPage() {
 
   const [loaded, setLoaded] = useState(false)
 
+  const [bgImage, setBgImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/backgrounds')
+      .then((r) => r.json())
+      .then((data: { selection?: Record<string, string | null> }) => {
+        setBgImage(data.selection?.todo ?? null)
+      })
+      .catch(() => {})
+  }, [])
+
   const sensors = useSensors(
     useSensor(TouchSensor, {
       activationConstraint: { delay: 150, tolerance: 5 },
@@ -238,7 +249,12 @@ export default function TodoPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
+    <main
+      className="min-h-screen text-white p-4 md:p-8 relative"
+      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+    >
+      {!bgImage && <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />}
+      {bgImage && <div className="absolute inset-0 bg-black/55 -z-10" />}
 
       {/* HEADER */}
 

@@ -26,6 +26,17 @@ export default function CoursesPage() {
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [loaded, setLoaded] = useState(false)
   const [favorites, setFavorites] = useState<Record<string, string>>({})
+
+  const [bgImage, setBgImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/backgrounds')
+      .then((r) => r.json())
+      .then((data: { selection?: Record<string, string | null> }) => {
+        setBgImage(data.selection?.courses ?? null)
+      })
+      .catch(() => {})
+  }, [])
   const [newStore, setNewStore] = useState('')
   const [isNewStoreInput, setIsNewStoreInput] = useState(false)
   const [editingStoreIndex, setEditingStoreIndex] = useState<number | null>(null)
@@ -290,7 +301,12 @@ export default function CoursesPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
+    <main
+      className="min-h-screen text-white p-4 md:p-8 relative"
+      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+    >
+      {!bgImage && <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />}
+      {bgImage && <div className="absolute inset-0 bg-black/55 -z-10" />}
 
       {/* HEADER */}
 

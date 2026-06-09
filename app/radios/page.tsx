@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Hls from 'hls.js'
 import { Square, Star, Camera, Check, Loader2, Radio as RadioIcon } from 'lucide-react'
 
+type Backgrounds = Record<string, string | null>
+
 type Radio = {
   name: string
   stream: string
@@ -38,12 +40,25 @@ export default function RadiosPage() {
   const logoInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
 
+  const [bgImage, setBgImage] = useState<string | null>(null)
+
   const [tab, setTab] = useState<'search' | 'manual'>('search')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<RadioBrowserResult[]>([])
   const [searching, setSearching] = useState(false)
   const [searchError, setSearchError] = useState(false)
   const [justAdded, setJustAdded] = useState<string | null>(null)
+
+  // BACKGROUND
+
+  useEffect(() => {
+    fetch('/api/admin/backgrounds')
+      .then((r) => r.json())
+      .then((data: { selection?: Backgrounds }) => {
+        setBgImage(data.selection?.radios ?? null)
+      })
+      .catch(() => {})
+  }, [])
 
   // LOAD
 
@@ -282,7 +297,16 @@ export default function RadiosPage() {
 
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-zinc-900 to-black text-white p-4 md:p-8">
+    <main
+      className="min-h-screen text-white p-4 md:p-8 relative"
+      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+    >
+      {!bgImage && (
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />
+      )}
+      {bgImage && (
+        <div className="absolute inset-0 bg-black/55 -z-10" />
+      )}
 
       <div className="flex items-center gap-3 md:gap-6 mb-6 md:mb-10">
 
