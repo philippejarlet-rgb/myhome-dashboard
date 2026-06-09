@@ -152,6 +152,7 @@ export default function AdminPage() {
         {/* Sélecteur page Radios */}
         {[
           { page: 'radios', label: 'Page Radios' },
+          { page: 'bar', label: 'Page Bar & Cocktails' },
           { page: 'weather', label: 'Page Météo' },
           { page: 'todo', label: 'Page Todo' },
           { page: 'courses', label: 'Page Courses' },
