@@ -3,7 +3,7 @@
 
 Dashboard personnel affiché en permanence sur une **tablette murale tactile**, à 1-2m de distance.
 
-Modules : Météo (multi-villes), Todo, Liste de courses, Radios, Atlas-Culinaire, Recettes-Monde, News (bandeau défilant), Photos...
+Modules : Météo (multi-villes), Todo, Liste de courses, Radios, Bar & Cocktails, Atlas-Culinaire, Recettes-Monde, News (bandeau défilant), Photos...
 
 ## Stack technique
 
@@ -97,6 +97,7 @@ La refonte responsive est **terminée** (Phase 1 home + Phase 2 sous-pages). La 
 - **Todo** : Supabase
 - **Courses** : Supabase
 - **Radios** : streams audio + UI de sélection
+- **Bar & Cocktails** : suggestions IA (Anthropic SDK), recherche de cocktails, page `/bar`
 - **Atlas-Culinaire** : recherche et sélection de recettes via API Atlas Culinaire
 - **Recettes-Monde** : API externe + affichage carte
 - **News** : bandeau défilant + page dédiée avec **16 chaînes** proposées
@@ -168,6 +169,7 @@ Les widgets `TodoWidget` et `CoursesWidget` gèrent leur propre scroll en intern
 - [x] Module Todo
 - [x] Module Courses
 - [x] Module Radios (lecture audio + UI)
+- [x] Module Bar & Cocktails (suggestions IA + recherche, page `/bar`)
 - [x] Module Photos (upload + suppression)
 - [x] Module Atlas-Culinaire (recherche + sélection de recettes)
 - [x] Module Recettes-Monde (widget "Recette du jour" en accueil)
@@ -182,3 +184,4 @@ Les widgets `TodoWidget` et `CoursesWidget` gèrent leur propre scroll en intern
 - [x] Responsive Phase 1 (home `/`) + Phase 2 (6 sous-pages)
 - [x] Authentification admin
 - [x] Déploiement Vercel final
+- [x] Fonds d'écran par page (Supabase Storage, géré depuis l'admin) — pages : radios, bar, météo, todo, courses, news, aide, connexion
