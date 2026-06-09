@@ -159,7 +159,7 @@ export default function AdminPage() {
           { page: 'help', label: 'Page Aide' },
           { page: 'login', label: 'Page Connexion' },
         ].map(({ page, label }) => (
-          <div key={page}>
+          <div key={page} className="mb-6">
             <p className="text-zinc-400 text-sm mb-3">{label}</p>
             <div className="flex flex-wrap gap-3">
 
