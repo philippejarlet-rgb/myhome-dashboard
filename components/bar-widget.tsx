@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Wine, Search, Sparkles, ChevronDown, ChevronUp, X, Plus } from 'lucide-react'
+import { Wine, Search, Sparkles, ChevronDown, ChevronUp, X, Plus, Heart, BookMarked } from 'lucide-react'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -26,7 +26,22 @@ type AiCocktail = {
   thumb?: string | null
 }
 
-type Tab = 'suggestions' | 'recherche' | 'ia'
+type FavoriteRow = {
+  id: string
+  user_id: string
+  source: 'db' | 'ai'
+  external_id: string | null
+  name: string
+  data: unknown
+  created_at: string
+}
+
+type FavProps = {
+  favorites: FavoriteRow[]
+  toggleFav: (source: 'db' | 'ai', external_id: string | null, name: string, data: unknown) => void
+}
+
+type Tab = 'suggestions' | 'recherche' | 'ia' | 'favoris'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -40,27 +55,14 @@ function parseFraction(s: string): number {
 
 function convertMeasure(meas: string): string {
   const m = meas.trim().toLowerCase()
-
   const oz = m.match(/^([\d\s/]+)\s*oz\.?$/)
-  if (oz) {
-    const cl = Math.round(parseFraction(oz[1]) * 3 * 10) / 10
-    return `${cl} cl`
-  }
+  if (oz) return `${Math.round(parseFraction(oz[1]) * 3 * 10) / 10} cl`
   const tsp = m.match(/^([\d\s/]+)\s*tsp\.?$/)
-  if (tsp) {
-    const cl = Math.round(parseFraction(tsp[1]) * 0.5 * 10) / 10
-    return `${cl} cl`
-  }
+  if (tsp) return `${Math.round(parseFraction(tsp[1]) * 0.5 * 10) / 10} cl`
   const tbsp = m.match(/^([\d\s/]+)\s*tbsp\.?$/)
-  if (tbsp) {
-    const cl = Math.round(parseFraction(tbsp[1]) * 1.5 * 10) / 10
-    return `${cl} cl`
-  }
+  if (tbsp) return `${Math.round(parseFraction(tbsp[1]) * 1.5 * 10) / 10} cl`
   const cup = m.match(/^([\d\s/]+)\s*cups?\.?$/)
-  if (cup) {
-    const cl = Math.round(parseFraction(cup[1]) * 25)
-    return `${cl} cl`
-  }
+  if (cup) return `${Math.round(parseFraction(cup[1]) * 25)} cl`
   if (/dash/.test(m)) return 'quelques gouttes'
   if (/splash|top up/.test(m)) return 'compléter'
   if (/twist/.test(m)) return '1 zeste'
@@ -68,7 +70,6 @@ function convertMeasure(meas: string): string {
   if (/wedge/.test(m)) return '1 quartier'
   if (/fill|top/.test(m)) return 'compléter'
   if (/part/.test(m)) return meas.trim().replace(/parts?/gi, 'mesure')
-
   return meas.trim()
 }
 
@@ -166,31 +167,37 @@ const CATEGORY_FR: Record<string, string> = {
   'Cocoa': 'Chocolat', 'Shake': 'Shake', 'Other/Unknown': 'Autre',
 }
 
-function tIng(name: string): string {
-  return INGREDIENT_FR[name] ?? INGREDIENT_FR[name.toLowerCase()] ?? name
+function tIng(name: string): string { return INGREDIENT_FR[name] ?? INGREDIENT_FR[name.toLowerCase()] ?? name }
+function tGlass(g: string | null | undefined): string | undefined { return g ? (GLASS_FR[g] ?? g) : undefined }
+function tAlco(a: string | null | undefined): string | undefined { return a ? (ALCOHOLIC_FR[a] ?? a) : undefined }
+function tCat(c: string | null | undefined): string | undefined { return c ? (CATEGORY_FR[c] ?? c) : undefined }
+
+function isFavDb(favorites: FavoriteRow[], idDrink: string) {
+  return favorites.some(f => f.source === 'db' && f.external_id === idDrink)
 }
-function tGlass(g: string | null | undefined): string | undefined {
-  if (!g) return undefined
-  return GLASS_FR[g] ?? g
-}
-function tAlco(a: string | null | undefined): string | undefined {
-  if (!a) return undefined
-  return ALCOHOLIC_FR[a] ?? a
-}
-function tCat(c: string | null | undefined): string | undefined {
-  if (!c) return undefined
-  return CATEGORY_FR[c] ?? c
+function isFavAi(favorites: FavoriteRow[], name: string) {
+  return favorites.some(f => f.source === 'ai' && f.name === name)
 }
 
 // ─── Sous-composants ─────────────────────────────────────────────────────────
 
+function HeartBtn({ active, onClick }: { active: boolean; onClick: (e: React.MouseEvent) => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="p-1.5 rounded-lg transition-colors"
+      aria-label={active ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+    >
+      <Heart
+        size={16}
+        className={active ? 'text-red-400 fill-red-400' : 'text-zinc-500'}
+      />
+    </button>
+  )
+}
+
 function CocktailCard({
-  thumb,
-  name,
-  sub,
-  glass,
-  active,
-  onToggle,
+  thumb, name, sub, glass, active, onToggle, isFavorite, onFavorite,
 }: {
   thumb: string | null
   name: string
@@ -198,17 +205,16 @@ function CocktailCard({
   glass?: string
   active: boolean
   onToggle: () => void
+  isFavorite?: boolean
+  onFavorite?: (e: React.MouseEvent) => void
 }) {
   return (
-    <button
-      onClick={onToggle}
-      className={`w-full text-left rounded-2xl overflow-hidden transition-all border ${
-        active
-          ? 'border-cyan-500/50 bg-cyan-900/20'
-          : 'border-white/5 bg-white/5 hover:bg-white/10'
+    <div
+      className={`w-full rounded-2xl overflow-hidden transition-all border ${
+        active ? 'border-cyan-500/50 bg-cyan-900/20' : 'border-white/5 bg-white/5'
       }`}
     >
-      <div className="flex items-center gap-3 p-3">
+      <div onClick={onToggle} className="flex items-center gap-3 p-3 cursor-pointer">
         {thumb ? (
           <img src={thumb} alt={name} className="w-14 h-14 rounded-xl object-cover shrink-0" />
         ) : (
@@ -221,22 +227,22 @@ function CocktailCard({
           {sub && <div className="text-xs text-zinc-400 mt-0.5 truncate">{sub}</div>}
           {glass && <div className="text-xs text-zinc-500 mt-0.5">{glass}</div>}
         </div>
-        {active ? <ChevronUp size={18} className="text-cyan-400 shrink-0" /> : <ChevronDown size={18} className="text-zinc-500 shrink-0" />}
+        <div className="flex items-center gap-0.5 shrink-0">
+          {onFavorite !== undefined && (
+            <HeartBtn active={!!isFavorite} onClick={onFavorite} />
+          )}
+          {active
+            ? <ChevronUp size={18} className="text-cyan-400" />
+            : <ChevronDown size={18} className="text-zinc-500" />
+          }
+        </div>
       </div>
-    </button>
+    </div>
   )
 }
 
 function DetailPanel({
-  thumb,
-  name,
-  category,
-  alcoholic,
-  glass,
-  instructions,
-  instructionsInFr = true,
-  ingredients,
-  onClose,
+  thumb, name, category, alcoholic, glass, instructions, instructionsInFr = true, ingredients, onClose,
 }: {
   thumb: string | null
   name: string
@@ -251,30 +257,19 @@ function DetailPanel({
   return (
     <div className="rounded-2xl bg-white/5 border border-cyan-500/30 p-4 mt-2">
       <div className="flex gap-4">
-        {thumb && (
-          <img src={thumb} alt={name} className="w-24 h-24 rounded-xl object-cover shrink-0" />
-        )}
+        {thumb && <img src={thumb} alt={name} className="w-24 h-24 rounded-xl object-cover shrink-0" />}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-bold text-lg leading-tight">{name}</h3>
-            <button onClick={onClose} className="text-zinc-400 hover:text-white shrink-0">
-              <X size={16} />
-            </button>
+            <button onClick={onClose} className="text-zinc-400 shrink-0"><X size={16} /></button>
           </div>
           <div className="flex flex-wrap gap-1.5 mt-1.5">
-            {category && (
-              <span className="text-xs bg-white/10 rounded-full px-2 py-0.5">{category}</span>
-            )}
-            {alcoholic && (
-              <span className="text-xs bg-white/10 rounded-full px-2 py-0.5">{alcoholic}</span>
-            )}
-            {glass && (
-              <span className="text-xs bg-cyan-900/40 text-cyan-300 rounded-full px-2 py-0.5">{glass}</span>
-            )}
+            {category && <span className="text-xs bg-white/10 rounded-full px-2 py-0.5">{category}</span>}
+            {alcoholic && <span className="text-xs bg-white/10 rounded-full px-2 py-0.5">{alcoholic}</span>}
+            {glass && <span className="text-xs bg-cyan-900/40 text-cyan-300 rounded-full px-2 py-0.5">{glass}</span>}
           </div>
         </div>
       </div>
-
       {ingredients.length > 0 && (
         <div className="mt-3">
           <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Ingrédients</div>
@@ -285,14 +280,11 @@ function DetailPanel({
           </ul>
         </div>
       )}
-
       {instructions && (
         <div className="mt-3">
           <div className="flex items-center gap-2 mb-1.5">
             <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Préparation</div>
-            {!instructionsInFr && (
-              <span className="text-xs text-zinc-500 italic">(en anglais)</span>
-            )}
+            {!instructionsInFr && <span className="text-xs text-zinc-500 italic">(en anglais)</span>}
           </div>
           <p className={`text-sm leading-relaxed ${instructionsInFr ? 'text-zinc-300' : 'text-zinc-400'}`}>
             {instructions}
@@ -305,7 +297,7 @@ function DetailPanel({
 
 // ─── Onglet Suggestions ───────────────────────────────────────────────────────
 
-function TabSuggestions() {
+function TabSuggestions({ favorites, toggleFav }: FavProps) {
   const [cocktails, setCocktails] = useState<CocktailDB[]>([])
   const [loading, setLoading] = useState(true)
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -322,9 +314,7 @@ function TabSuggestions() {
         )
       )
       setCocktails(results.filter(Boolean) as CocktailDB[])
-    } catch {
-      setCocktails([])
-    }
+    } catch { setCocktails([]) }
     setLoading(false)
   }
 
@@ -335,14 +325,10 @@ function TabSuggestions() {
   return (
     <div>
       <div className="flex justify-end mb-3">
-        <button
-          onClick={load}
-          className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-        >
+        <button onClick={load} className="text-xs text-cyan-400 transition-colors">
           Nouvelles suggestions →
         </button>
       </div>
-
       {loading ? (
         <div className="text-center text-zinc-500 py-8">Chargement…</div>
       ) : (
@@ -356,6 +342,8 @@ function TabSuggestions() {
                 glass={tGlass(c.strGlass)}
                 active={activeId === c.idDrink}
                 onToggle={() => setActiveId(activeId === c.idDrink ? null : c.idDrink)}
+                isFavorite={isFavDb(favorites, c.idDrink)}
+                onFavorite={e => { e.stopPropagation(); toggleFav('db', c.idDrink, c.strDrink, c) }}
               />
               {activeId === c.idDrink && active && (
                 <DetailPanel
@@ -380,7 +368,7 @@ function TabSuggestions() {
 
 // ─── Onglet Recherche ─────────────────────────────────────────────────────────
 
-function TabRecherche() {
+function TabRecherche({ favorites, toggleFav }: FavProps) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<CocktailDB[]>([])
   const [loading, setLoading] = useState(false)
@@ -393,14 +381,10 @@ function TabRecherche() {
     setSearched(true)
     setActiveId(null)
     try {
-      const r = await fetch(
-        `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query.trim())}`
-      )
+      const r = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query.trim())}`)
       const d = await r.json()
       setResults(d.drinks ?? [])
-    } catch {
-      setResults([])
-    }
+    } catch { setResults([]) }
     setLoading(false)
   }
 
@@ -417,14 +401,10 @@ function TabRecherche() {
           placeholder="Nom du cocktail…"
           className="flex-1 bg-white/10 rounded-xl px-4 py-3 text-base placeholder-zinc-500 outline-none focus:ring-2 focus:ring-cyan-500/50"
         />
-        <button
-          onClick={search}
-          className="bg-cyan-600 hover:bg-cyan-500 rounded-xl px-4 py-3 transition-colors"
-        >
+        <button onClick={search} className="bg-cyan-600 rounded-xl px-4 py-3 transition-colors">
           <Search size={20} />
         </button>
       </div>
-
       {loading && <div className="text-center text-zinc-500 py-8">Recherche…</div>}
       {!loading && searched && results.length === 0 && (
         <div className="text-center text-zinc-500 py-8">Aucun résultat pour « {query} »</div>
@@ -440,6 +420,8 @@ function TabRecherche() {
                 glass={tGlass(c.strGlass)}
                 active={activeId === c.idDrink}
                 onToggle={() => setActiveId(activeId === c.idDrink ? null : c.idDrink)}
+                isFavorite={isFavDb(favorites, c.idDrink)}
+                onFavorite={e => { e.stopPropagation(); toggleFav('db', c.idDrink, c.strDrink, c) }}
               />
               {activeId === c.idDrink && active && (
                 <DetailPanel
@@ -464,7 +446,7 @@ function TabRecherche() {
 
 // ─── Onglet Mon bar IA ────────────────────────────────────────────────────────
 
-function TabIA() {
+function TabIA({ favorites, toggleFav }: FavProps) {
   const [input, setInput] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [cocktails, setCocktails] = useState<AiCocktail[]>([])
@@ -474,13 +456,9 @@ function TabIA() {
 
   const addTag = () => {
     const val = input.trim()
-    if (val && !tags.includes(val)) {
-      setTags(prev => [...prev, val])
-    }
+    if (val && !tags.includes(val)) setTags(prev => [...prev, val])
     setInput('')
   }
-
-  const removeTag = (tag: string) => setTags(prev => prev.filter(t => t !== tag))
 
   const generate = async () => {
     if (tags.length === 0) return
@@ -488,7 +466,6 @@ function TabIA() {
     setError('')
     setActiveIdx(null)
     setCocktails([])
-
     try {
       const r = await fetch('/api/cocktails', {
         method: 'POST',
@@ -496,42 +473,27 @@ function TabIA() {
         body: JSON.stringify({ ingredients: tags }),
       })
       const data = await r.json()
-      if (!r.ok) {
-        setError(data.error ?? 'Erreur inconnue')
-        setLoading(false)
-        return
-      }
+      if (!r.ok) { setError(data.error ?? 'Erreur inconnue'); setLoading(false); return }
 
-      // Chercher les photos sur TheCocktailDB pour les cocktails connus
       const withThumbs = await Promise.all(
-        (data.cocktails as AiCocktail[]).map(async (c) => {
+        (data.cocktails as AiCocktail[]).map(async c => {
           if (!c.name_en) return { ...c, thumb: null }
           try {
-            const res = await fetch(
-              `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(c.name_en)}`
-            )
+            const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(c.name_en)}`)
             const d = await res.json()
-            const match = d.drinks?.[0] as CocktailDB | undefined
-            return { ...c, thumb: match?.strDrinkThumb ?? null }
-          } catch {
-            return { ...c, thumb: null }
-          }
+            return { ...c, thumb: (d.drinks?.[0] as CocktailDB | undefined)?.strDrinkThumb ?? null }
+          } catch { return { ...c, thumb: null } }
         })
       )
       setCocktails(withThumbs)
-    } catch {
-      setError('Impossible de contacter l\'IA')
-    }
+    } catch { setError("Impossible de contacter l'IA") }
     setLoading(false)
   }
 
   return (
     <div>
-      {/* Saisie des ingrédients */}
       <div className="mb-4">
-        <label className="text-xs text-zinc-400 uppercase tracking-wider mb-2 block">
-          Tes ingrédients
-        </label>
+        <label className="text-xs text-zinc-400 uppercase tracking-wider mb-2 block">Tes ingrédients</label>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
@@ -541,43 +503,30 @@ function TabIA() {
             placeholder="Ex: rhum, citron vert…"
             className="flex-1 bg-white/10 rounded-xl px-4 py-3 text-base placeholder-zinc-500 outline-none focus:ring-2 focus:ring-cyan-500/50"
           />
-          <button
-            onClick={addTag}
-            className="bg-white/10 hover:bg-white/20 rounded-xl px-4 py-3 transition-colors"
-          >
+          <button onClick={addTag} className="bg-white/10 rounded-xl px-4 py-3 transition-colors">
             <Plus size={20} />
           </button>
         </div>
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {tags.map(tag => (
-              <span
-                key={tag}
-                className="flex items-center gap-1.5 bg-cyan-900/40 text-cyan-200 rounded-full px-3 py-1 text-sm"
-              >
+              <span key={tag} className="flex items-center gap-1.5 bg-cyan-900/40 text-cyan-200 rounded-full px-3 py-1 text-sm">
                 {tag}
-                <button onClick={() => removeTag(tag)} className="hover:text-white">
-                  <X size={12} />
-                </button>
+                <button onClick={() => setTags(prev => prev.filter(t => t !== tag))}><X size={12} /></button>
               </span>
             ))}
           </div>
         )}
       </div>
-
       <button
         onClick={generate}
         disabled={tags.length === 0 || loading}
-        className="w-full bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-4 py-3 text-base font-semibold flex items-center justify-center gap-2 transition-colors mb-4"
+        className="w-full bg-cyan-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-4 py-3 text-base font-semibold flex items-center justify-center gap-2 transition-colors mb-4"
       >
         <Sparkles size={18} />
-        {loading ? 'L\'IA mixe…' : 'Suggère des cocktails'}
+        {loading ? "L'IA mixe…" : 'Suggère des cocktails'}
       </button>
-
-      {error && (
-        <div className="text-red-400 text-sm text-center mb-4">{error}</div>
-      )}
-
+      {error && <div className="text-red-400 text-sm text-center mb-4">{error}</div>}
       {cocktails.length > 0 && (
         <div className="space-y-2">
           {cocktails.map((c, i) => (
@@ -589,6 +538,8 @@ function TabIA() {
                 glass={c.glass}
                 active={activeIdx === i}
                 onToggle={() => setActiveIdx(activeIdx === i ? null : i)}
+                isFavorite={isFavAi(favorites, c.name)}
+                onFavorite={e => { e.stopPropagation(); toggleFav('ai', null, c.name, c) }}
               />
               {activeIdx === i && (
                 <DetailPanel
@@ -608,43 +559,170 @@ function TabIA() {
   )
 }
 
+// ─── Onglet Favoris ───────────────────────────────────────────────────────────
+
+function TabFavoris({ favorites, toggleFav }: FavProps) {
+  const [activeId, setActiveId] = useState<string | null>(null)
+
+  if (favorites.length === 0) {
+    return (
+      <div className="text-center text-zinc-500 py-12">
+        <Heart size={32} className="mx-auto mb-3 opacity-30" />
+        <p>Aucun favori pour l'instant.</p>
+        <p className="text-sm mt-1">Appuie sur ♥ pour en ajouter.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      {favorites.map(fav => {
+        const isActive = activeId === fav.id
+
+        if (fav.source === 'db') {
+          const c = fav.data as CocktailDB
+          return (
+            <div key={fav.id}>
+              <CocktailCard
+                thumb={c.strDrinkThumb}
+                name={fav.name}
+                sub={tCat(c.strCategory)}
+                glass={tGlass(c.strGlass)}
+                active={isActive}
+                onToggle={() => setActiveId(isActive ? null : fav.id)}
+                isFavorite={true}
+                onFavorite={e => { e.stopPropagation(); toggleFav('db', fav.external_id, fav.name, fav.data) }}
+              />
+              {isActive && (
+                <DetailPanel
+                  thumb={c.strDrinkThumb}
+                  name={fav.name}
+                  category={tCat(c.strCategory)}
+                  alcoholic={tAlco(c.strAlcoholic)}
+                  glass={tGlass(c.strGlass)}
+                  instructions={frInstructions(c)?.text}
+                  instructionsInFr={frInstructions(c)?.isFr ?? true}
+                  ingredients={parseIngredients(c)}
+                  onClose={() => setActiveId(null)}
+                />
+              )}
+            </div>
+          )
+        }
+
+        const c = fav.data as AiCocktail
+        return (
+          <div key={fav.id}>
+            <CocktailCard
+              thumb={c.thumb ?? null}
+              name={fav.name}
+              sub={c.description}
+              glass={c.glass}
+              active={isActive}
+              onToggle={() => setActiveId(isActive ? null : fav.id)}
+              isFavorite={true}
+              onFavorite={e => { e.stopPropagation(); toggleFav('ai', null, fav.name, fav.data) }}
+            />
+            {isActive && (
+              <DetailPanel
+                thumb={c.thumb ?? null}
+                name={fav.name}
+                glass={c.glass}
+                instructions={c.description}
+                ingredients={c.ingredients_used ?? []}
+                onClose={() => setActiveId(null)}
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 // ─── Widget principal ─────────────────────────────────────────────────────────
 
 export default function BarWidget() {
   const [tab, setTab] = useState<Tab>('suggestions')
+  const [favorites, setFavorites] = useState<FavoriteRow[]>([])
+
+  useEffect(() => {
+    fetch('/api/favorites')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setFavorites(data) })
+      .catch(() => {})
+  }, [])
+
+  function toggleFav(source: 'db' | 'ai', external_id: string | null, name: string, data: unknown) {
+    const already = source === 'db'
+      ? isFavDb(favorites, external_id ?? '')
+      : isFavAi(favorites, name)
+
+    if (already) {
+      setFavorites(prev => prev.filter(f =>
+        !(f.source === source && (source === 'db' ? f.external_id === external_id : f.name === name))
+      ))
+      fetch('/api/favorites', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source, external_id, name }),
+      }).catch(() => {})
+    } else {
+      const temp: FavoriteRow = {
+        id: `temp-${Date.now()}`,
+        user_id: '',
+        source,
+        external_id: external_id ?? null,
+        name,
+        data,
+        created_at: new Date().toISOString(),
+      }
+      setFavorites(prev => [temp, ...prev])
+      fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source, external_id, name, data }),
+      }).catch(() => {})
+    }
+  }
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'suggestions', label: 'Suggestions', icon: <Wine size={16} /> },
     { id: 'recherche', label: 'Recherche', icon: <Search size={16} /> },
     { id: 'ia', label: 'Mon bar IA', icon: <Sparkles size={16} /> },
+    { id: 'favoris', label: 'Favoris', icon: <BookMarked size={16} /> },
   ]
+
+  const favProps: FavProps = { favorites, toggleFav }
 
   return (
     <div className="glass-card rounded-3xl p-4 md:p-6 h-full overflow-y-auto">
       <h2 className="text-2xl md:text-4xl font-thin mb-4 md:mb-6">Bar & Cocktails</h2>
 
-      {/* Onglets */}
       <div className="flex gap-2 mb-5 md:mb-6 bg-white/5 rounded-2xl p-1">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-              tab === t.id
-                ? 'bg-cyan-600 text-white'
-                : 'text-zinc-400 hover:text-white'
-            }`}
+              t.id === 'favoris' && favorites.length > 0 ? 'relative' : ''
+            } ${tab === t.id ? 'bg-cyan-600 text-white' : 'text-zinc-400'}`}
           >
             {t.icon}
             <span className="hidden md:inline">{t.label}</span>
+            {t.id === 'favoris' && favorites.length > 0 && (
+              <span className="hidden md:inline text-xs bg-white/20 rounded-full px-1.5 py-0.5 leading-none">
+                {favorites.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Contenu */}
-      {tab === 'suggestions' && <TabSuggestions />}
-      {tab === 'recherche' && <TabRecherche />}
-      {tab === 'ia' && <TabIA />}
+      {tab === 'suggestions' && <TabSuggestions {...favProps} />}
+      {tab === 'recherche' && <TabRecherche {...favProps} />}
+      {tab === 'ia' && <TabIA {...favProps} />}
+      {tab === 'favoris' && <TabFavoris {...favProps} />}
     </div>
   )
 }

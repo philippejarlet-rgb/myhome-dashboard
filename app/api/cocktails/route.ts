@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
 
-// Rate limiting : 10 req/min/IP (en mémoire — non partagé entre instances Vercel)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT = 10
 const RATE_WINDOW_MS = 60_000
@@ -18,6 +18,10 @@ function checkRateLimit(ip: string): boolean {
   if (entry.count >= RATE_LIMIT) return false
   entry.count++
   return true
+}
+
+function buildCacheKey(ingredients: string[]): string {
+  return ingredients.map(i => i.trim().toLowerCase()).sort().join(',')
 }
 
 const SYSTEM_PROMPT = `Tu es un expert en cocktails et mixologie. À partir d'une liste d'ingrédients fournis, propose exactement 3 cocktails réalisables.
@@ -49,10 +53,7 @@ export async function POST(req: NextRequest) {
 
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1'
   if (!checkRateLimit(ip)) {
-    return NextResponse.json(
-      { error: 'Trop de requêtes, réessaye dans une minute' },
-      { status: 429 }
-    )
+    return NextResponse.json({ error: 'Trop de requêtes, réessaye dans une minute' }, { status: 429 })
   }
 
   let ingredients: string[]
@@ -66,19 +67,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Corps de requête invalide' }, { status: 400 })
   }
 
+  const cacheKey = buildCacheKey(ingredients)
+
+  // Lecture cache
+  const { data: cached, error: cacheReadError } = await supabaseAdmin
+    .from('cocktail_cache')
+    .select('data')
+    .eq('cache_key', cacheKey)
+    .maybeSingle()
+
+  if (cacheReadError) {
+    console.error('[cocktails] lecture cache:', cacheReadError.message)
+  }
+
+  if (cached) {
+    return NextResponse.json({ ...cached.data, cached: true })
+  }
+
+  // Appel Haiku
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
   try {
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      system: [
-        {
-          type: 'text',
-          text: SYSTEM_PROMPT,
-          cache_control: { type: 'ephemeral' },
-        },
-      ],
+      system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
       messages: [
         {
           role: 'user',
@@ -90,12 +103,19 @@ export async function POST(req: NextRequest) {
     const raw = message.content[0].type === 'text' ? message.content[0].text : ''
     const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
     const data = JSON.parse(text)
-    return NextResponse.json(data)
+
+    // Écriture cache
+    const { error: insertError } = await supabaseAdmin
+      .from('cocktail_cache')
+      .insert({ cache_key: cacheKey, data })
+
+    if (insertError) {
+      console.error('[cocktails] écriture cache:', insertError.message)
+    }
+
+    return NextResponse.json({ ...data, cached: false })
   } catch (err) {
-    console.error('Erreur API cocktails:', err)
-    return NextResponse.json(
-      { error: 'Erreur lors de la génération de cocktails' },
-      { status: 500 }
-    )
+    console.error('[cocktails] erreur Haiku:', err)
+    return NextResponse.json({ error: 'Erreur lors de la génération de cocktails' }, { status: 500 })
   }
 }
