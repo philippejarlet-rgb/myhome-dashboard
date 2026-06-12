@@ -170,11 +170,10 @@ export default function WeatherPage() {
   return (
 
     <main
-      className="min-h-screen text-white p-4 md:p-8 relative"
-      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      className="min-h-screen text-white p-4 md:p-8 relative isolate"
     >
-      {!bgImage && <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />}
-      {bgImage && <div className="absolute inset-0 bg-black/55 -z-10" />}
+      <div className={`absolute inset-0 -z-10 ${bgImage ? 'bg-black/55' : 'bg-gradient-to-br from-slate-950 via-zinc-900 to-black'}`} />
+      {bgImage && <div className="absolute inset-0 -z-20" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
 
       {/* HEADER */}
 

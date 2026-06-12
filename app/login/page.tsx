@@ -37,11 +37,10 @@ export default function LoginPage() {
 
   return (
     <main
-      className="min-h-screen flex items-center justify-center relative"
-      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      className="min-h-screen flex items-center justify-center relative isolate"
     >
-      {!bgImage && <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-900 to-black -z-10" />}
-      {bgImage && <div className="absolute inset-0 bg-black/55 -z-10" />}
+      <div className={`absolute inset-0 -z-10 ${bgImage ? 'bg-black/55' : 'bg-gradient-to-br from-slate-950 via-zinc-900 to-black'}`} />
+      {bgImage && <div className="absolute inset-0 -z-20" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
       <div className="glass-card rounded-3xl p-10 w-96 flex flex-col items-center gap-6">
         <img src="/android-chrome-192x192.png" alt="MyHome" className="w-16 h-16" />
         <h1 className="text-3xl font-thin text-white tracking-widest">MYHOME</h1>
