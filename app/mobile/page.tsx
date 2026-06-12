@@ -8,7 +8,8 @@ import { RefreshCw, Home, ShoppingCart, ListTodo, Radio, ClipboardList, Shopping
 type Tab = 'home' | 'courses' | 'todo' | 'radios'
 
 type Todo = { text: string; checked: boolean }
-type CoursesData = { items: { text: string; checked: boolean }[]; history: string[] }
+type CourseItem = { text: string; checked: boolean; store?: string }
+type CoursesData = { items: CourseItem[]; history: string[] }
 type Radio = { name: string; stream: string; logo: string; favorite: boolean }
 
 export default function MobilePage() {
@@ -21,9 +22,10 @@ export default function MobilePage() {
   const [newTodo, setNewTodo] = useState('')
 
   // Courses state
-  const [courses, setCourses] = useState<{ text: string; checked: boolean }[]>([])
+  const [courses, setCourses] = useState<CourseItem[]>([])
   const [history, setHistory] = useState<string[]>([])
   const [newCourse, setNewCourse] = useState('')
+  const [storeFilter, setStoreFilter] = useState<string | null>(null)
 
   // Radio state
   const [radios, setRadios] = useState<Radio[]>([])
@@ -115,7 +117,7 @@ export default function MobilePage() {
   const deleteTodo = (i: number) => saveTodos(todos.filter((_, idx) => idx !== i))
 
   // ── Courses helpers ──
-  const saveCourses = (items: { text: string; checked: boolean }[], hist: string[]) => {
+  const saveCourses = (items: CourseItem[], hist: string[]) => {
     setCourses(items); setHistory(hist)
     fetch('/api/data/courses', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items, history: hist }) }).catch(() => {})
   }
@@ -199,23 +201,52 @@ export default function MobilePage() {
         )}
 
         {/* COURSES TAB */}
-        {activeTab === 'courses' && (
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
-              <input value={newCourse} onChange={e => setNewCourse(e.target.value)} onKeyDown={e => e.key === 'Enter' && addCourse()} placeholder="Ajouter un article..." className="flex-1 bg-white/10 rounded-2xl px-4 py-3 text-lg outline-none placeholder:text-zinc-500" list="course-history" />
-              <datalist id="course-history">{history.map(h => <option key={h} value={h} />)}</datalist>
-              <button onClick={addCourse} className="bg-cyan-500 rounded-2xl px-5 py-3 text-xl font-bold">+</button>
-            </div>
-            {courses.length === 0 && <p className="text-zinc-500 text-center mt-8">Aucun article 😊</p>}
-            {courses.map((item, i) => (
-              <div key={item.text + i} className="flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3">
-                <button onClick={() => toggleCourse(i)} className="text-2xl shrink-0">{item.checked ? '✅' : '⬜'}</button>
-                <span className={`flex-1 text-lg ${item.checked ? 'line-through text-zinc-500' : ''}`}>{item.text}</span>
-                <button onClick={() => deleteCourse(i)} className="text-zinc-500 active:text-red-400 text-xl shrink-0">✕</button>
+        {activeTab === 'courses' && (() => {
+          const stores = Array.from(new Set(courses.filter(c => c.store).map(c => c.store!))).sort()
+          const displayed = courses
+            .map((c, i) => ({ ...c, originalIndex: i }))
+            .filter(c => storeFilter === null || c.store === storeFilter)
+            .sort((a, b) => Number(a.checked) - Number(b.checked))
+          return (
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2">
+                <input value={newCourse} onChange={e => setNewCourse(e.target.value)} onKeyDown={e => e.key === 'Enter' && addCourse()} placeholder="Ajouter un article..." className="flex-1 bg-white/10 rounded-2xl px-4 py-3 text-lg outline-none placeholder:text-zinc-500" list="course-history" />
+                <datalist id="course-history">{history.map(h => <option key={h} value={h} />)}</datalist>
+                <button onClick={addCourse} className="bg-cyan-500 rounded-2xl px-5 py-3 text-xl font-bold">+</button>
               </div>
-            ))}
-          </div>
-        )}
+              {stores.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setStoreFilter(null)}
+                    className={`rounded-2xl px-3 py-1.5 text-sm font-medium transition-all ${storeFilter === null ? 'bg-cyan-500 text-white' : 'bg-white/10 text-zinc-400 active:bg-white/20'}`}
+                  >
+                    Tous
+                  </button>
+                  {stores.map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setStoreFilter(storeFilter === s ? null : s)}
+                      className={`rounded-2xl px-3 py-1.5 text-sm font-medium transition-all ${storeFilter === s ? 'bg-cyan-500 text-white' : 'bg-white/10 text-zinc-400 active:bg-white/20'}`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {displayed.length === 0 && <p className="text-zinc-500 text-center mt-8">Aucun article 😊</p>}
+              {displayed.map(item => (
+                <div key={item.originalIndex} className={`flex items-center gap-3 bg-white/5 rounded-2xl px-4 py-3 transition-all ${item.checked ? 'opacity-50' : ''}`}>
+                  <button onClick={() => toggleCourse(item.originalIndex)} className="text-2xl shrink-0">{item.checked ? '✅' : '⬜'}</button>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-lg ${item.checked ? 'line-through text-zinc-500' : ''}`}>{item.text}</span>
+                    {item.store && <p className="text-xs text-zinc-500 mt-0.5">{item.store}</p>}
+                  </div>
+                  <button onClick={() => deleteCourse(item.originalIndex)} className="text-zinc-500 active:text-red-400 text-xl shrink-0">✕</button>
+                </div>
+              ))}
+            </div>
+          )
+        })()}
 
         {/* TODO TAB */}
         {activeTab === 'todo' && (
