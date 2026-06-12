@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Hls from 'hls.js'
 import { RefreshCw, Home, ShoppingCart, ListTodo, Radio, ClipboardList, ShoppingBasket, ArrowLeft } from 'lucide-react'
@@ -12,7 +12,7 @@ type CourseItem = { text: string; checked: boolean; store?: string }
 type CoursesData = { items: CourseItem[]; history: string[] }
 type Radio = { name: string; stream: string; logo: string; favorite: boolean }
 
-export default function MobilePage() {
+function MobilePageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<Tab>((searchParams.get('tab') as Tab) ?? 'home')
@@ -322,5 +322,13 @@ export default function MobilePage() {
       <audio ref={audioRef} />
 
     </div>
+  )
+}
+
+export default function MobilePage() {
+  return (
+    <Suspense>
+      <MobilePageInner />
+    </Suspense>
   )
 }
