@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Hls from 'hls.js'
-import { RefreshCw, Home, ShoppingCart, ListTodo, Radio, ClipboardList, ShoppingBasket } from 'lucide-react'
+import { RefreshCw, Home, ShoppingCart, ListTodo, Radio, ClipboardList, ShoppingBasket, ArrowLeft } from 'lucide-react'
 
 type Tab = 'home' | 'courses' | 'todo' | 'radios'
 
@@ -11,7 +12,9 @@ type CoursesData = { items: { text: string; checked: boolean }[]; history: strin
 type Radio = { name: string; stream: string; logo: string; favorite: boolean }
 
 export default function MobilePage() {
-  const [activeTab, setActiveTab] = useState<Tab>('home')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [activeTab, setActiveTab] = useState<Tab>((searchParams.get('tab') as Tab) ?? 'home')
 
   // Todo state
   const [todos, setTodos] = useState<Todo[]>([])
@@ -133,11 +136,11 @@ export default function MobilePage() {
       {/* TOP NAV */}
       <div className="flex border-b border-white/10 shrink-0">
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => router.push('/courses')}
           className="flex flex-col items-center gap-1 py-4 px-3 text-sm text-zinc-400 active:text-white transition-all"
         >
-          <RefreshCw size={22} />
-          <span>Refresh</span>
+          <ArrowLeft size={22} />
+          <span>Retour</span>
         </button>
         {tabs.map(tab => (
           <button
