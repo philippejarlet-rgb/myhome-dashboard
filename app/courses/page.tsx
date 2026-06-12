@@ -326,10 +326,10 @@ export default function CoursesPage() {
         <div className="ml-auto flex items-center gap-3">
           <button
             onClick={() => router.push('/mobile?tab=courses')}
-            className="glass-card rounded-2xl px-4 py-3 hover:scale-105 transition-all"
-            title="Version mobile"
+            className="glass-card rounded-2xl px-4 py-3 hover:scale-105 transition-all flex items-center gap-2"
           >
             <MonitorSmartphone size={18} />
+            <span className="text-sm">Mobile</span>
           </button>
           <button
             onClick={shareCourses}
