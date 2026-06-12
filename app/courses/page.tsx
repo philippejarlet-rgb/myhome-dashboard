@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Share2, Check, Smartphone } from 'lucide-react'
+import { Share2, Check, MonitorSmartphone } from 'lucide-react'
 
 type Item = {
   text: string
@@ -329,7 +329,7 @@ export default function CoursesPage() {
             className="glass-card rounded-2xl px-4 py-3 hover:scale-105 transition-all"
             title="Version mobile"
           >
-            <Smartphone size={18} />
+            <MonitorSmartphone size={18} />
           </button>
           <button
             onClick={shareCourses}
