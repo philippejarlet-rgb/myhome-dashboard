@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  CloudSun, ListTodo, ShoppingCart, Music2, Globe, HelpCircle, Camera
+  CloudSun, ListTodo, ShoppingCart, Music2, HelpCircle, Camera
 } from 'lucide-react'
 
 const sections = [
@@ -12,7 +12,7 @@ const sections = [
     title: "MyHome — c'est quoi ?",
     content: [
       'MyHome est un dashboard personnel conçu pour rester affiché en permanence sur une tablette murale tactile dans votre maison.',
-      'Il regroupe tous vos outils du quotidien en un seul endroit : météo multi-villes, listes de tâches et de courses, radios en streaming, recettes du monde, actualités et photos.',
+      'Il regroupe tous vos outils du quotidien en un seul endroit : météo multi-villes, listes de tâches et de courses, radios en streaming, collecte des poubelles, actualités et photos.',
       "Tout est accessible d'un simple tap, sans clavier, depuis 1 à 2 mètres de distance.",
     ],
   },
@@ -43,23 +43,6 @@ const sections = [
       '→ Magasins favoris : les magasins que vous utilisez souvent sont mémorisés et proposés en auto-complétion.',
       '→ Groupement automatique : les articles sont regroupés par magasin dans la liste pour faciliter les courses.',
       '→ Supprimer un article : tapez sur la corbeille à droite de l\'article.',
-    ],
-  },
-  {
-    icon: <Globe size={28} className="text-purple-400" />,
-    title: 'Recettes du Monde',
-    content: [
-      '→ La page Recettes du Monde est un moteur de recherche de recettes du monde entier.',
-      '→ Tapez un ingrédient ou un plat dans la barre de recherche pour trouver des recettes.',
-      '→ Cliquez sur une recette pour voir ses détails complets.',
-    ],
-  },
-  {
-    icon: <Globe size={28} className="text-amber-400" />,
-    title: 'Atlas Culinaire',
-    content: [
-      '→ Le bouton "Atlas Culinaire" (dans la barre du bas ou le menu) ouvre directement le site atlasculinaire.com.',
-      '→ Vous accédez à l\'intégralité du site avec toutes ses recettes, articles et fonctionnalités.',
     ],
   },
   {

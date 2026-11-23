@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import {
   Menu, X, CloudSun, ListTodo, ShoppingCart, Music2,
   Camera, RefreshCw, LogOut, HelpCircle
@@ -88,16 +87,6 @@ export default function MobileMenu() {
             <Music2 size={22} />
             <span>Radios</span>
           </Link>
-          <button onClick={() => { window.open('https://atlasculinaire.com', '_blank', 'noopener,noreferrer'); setOpen(false) }} className={linkClass}>
-            <Image
-              src="https://atlasculinaire.com/favicon.ico"
-              alt="Atlas Culinaire"
-              width={22}
-              height={22}
-              unoptimized
-            />
-            <span>Atlas Culinaire</span>
-          </button>
           <Link href="/photos" onClick={() => setOpen(false)} className={linkClass}>
             <Camera size={22} />
             <span>Photos</span>

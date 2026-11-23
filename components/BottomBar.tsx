@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import {
   RefreshCw, CloudSun, ListTodo, ShoppingCart, Music2,
   Wine, Newspaper, Camera, Maximize2, Minimize2, LogOut, HelpCircle
@@ -33,7 +32,6 @@ export default function BottomBar() {
     { icon: <ShoppingCart size={26} />, label: 'Courses', href: '/courses' },
     { icon: <Music2 size={26} />, label: 'Radios', href: '/radios' },
     { icon: <Wine size={26} />, label: 'Bar', href: '/bar' },
-    { icon: null, label: 'Atlas-Culinaire', href: null },
     { icon: <Newspaper size={26} />, label: 'News', href: '/news' },
     { icon: <Camera size={26} />, label: 'Photos', href: '/photos' },
     { icon: <HelpCircle size={26} />, label: 'Aide', href: '/help' },
@@ -56,20 +54,6 @@ export default function BottomBar() {
         </button>
 
         {items.map((item) => {
-          if (item.label === 'Atlas-Culinaire') {
-            return (
-              <button key={item.label} onClick={() => window.open('https://atlasculinaire.com', '_blank', 'noopener,noreferrer')} className={btnClass}>
-                <Image
-                  src="https://atlasculinaire.com/favicon.ico"
-                  alt="Atlas Culinaire"
-                  width={26}
-                  height={26}
-                  unoptimized
-                />
-                <span>Atlas-Culinaire</span>
-              </button>
-            )
-          }
           return (
             <Link key={item.label} href={item.href!} className={btnClass}>
               {item.icon}
