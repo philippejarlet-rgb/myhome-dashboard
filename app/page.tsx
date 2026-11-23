@@ -8,7 +8,7 @@ import WeatherWidget from '@/components/WeatherWidget'
 import RadioWidget from '@/components/RadioWidget'
 import NewsTicker from '@/components/NewsTicker'
 import TodoWidget from '@/components/TodoWidget'
-import RecetteDuMonde from '@/components/RecetteDuMonde'
+import PoubellesWidget from '@/components/PoubellesWidget'
 import BottomBar from '@/components/BottomBar'
 import MobileMenu from '@/components/MobileMenu'
 
@@ -84,9 +84,9 @@ export default function Home() {
           <WeatherWidget />
         </div>
 
-        {/* Recette du Monde — mobile: 5e, desktop: col 9-12 row 1 */}
+        {/* Poubelles — mobile: 5e, desktop: col 9-12 row 1 */}
         <div className="order-5 md:order-none md:col-span-4 h-[160px] overflow-hidden md:h-[160px]">
-          <RecetteDuMonde />
+          <PoubellesWidget />
         </div>
 
         {/* Todo — mobile: 3e, desktop: col 1-3 row 2 */}
