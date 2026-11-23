@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   Menu, X, CloudSun, ListTodo, ShoppingCart, Music2,
-  Globe, Camera, RefreshCw, LogOut, HelpCircle
+  Camera, RefreshCw, LogOut, HelpCircle
 } from 'lucide-react'
 
 export default function MobileMenu() {
@@ -87,10 +87,6 @@ export default function MobileMenu() {
           <Link href="/radios" onClick={() => setOpen(false)} className={linkClass}>
             <Music2 size={22} />
             <span>Radios</span>
-          </Link>
-          <Link href="/cuisine" onClick={() => setOpen(false)} className={linkClass}>
-            <Globe size={22} />
-            <span>Recettes du Monde</span>
           </Link>
           <button onClick={() => { window.open('https://atlasculinaire.com', '_blank', 'noopener,noreferrer'); setOpen(false) }} className={linkClass}>
             <Image
